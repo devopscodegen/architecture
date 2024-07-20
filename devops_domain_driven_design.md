@@ -1,0 +1,36 @@
+# Subdomains/Bounded Contexts
+- Build - core
+    - Language
+    - Dependency management tool
+    - Dependency manifest
+    - Compiler
+- Package - core
+    - Docker
+    - Packer
+    - Archive
+    - OS packages
+- Test - supporting
+    - Code Scanning for bugs, readability, maintainability 
+    - Unit
+    - Contract
+    - Simulated
+    - Integration testing of application component with upstream and downstream systems.
+    - End to End testing of all application components deployed to the environment.
+    - Performance
+    - Reliability Chaos Engineering
+    - Security
+- Deploy - core
+    - ArgoCD, Helm, Kubernetes
+    - Infrastructure - AWS, Azure, Google Cloud
+    - Database - Liquibase, Flyway
+    - Ansible
+    - Environment Configuration
+        - Middleware
+        - Runtime
+        - OS
+        - Messaging - publish subscribe, event log
+        - Caching - redis
+        - Searching - elasticsearch
+- Repositories - supporting
+    - Code repository upload ( checkin ) / download ( checkout )
+    - Artifact repository upload ( push ) / download ( pull )
