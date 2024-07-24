@@ -12,3 +12,5 @@
 | Generative AI | |
 | Non-Generative AI | |
 | SaaS Applications Configuration and Customization | |
+| Integration | Mulesoft |
+| BPM | Bizagi |
