@@ -23,57 +23,58 @@ for each created feature, bug and problem issue, feature, bug and problem branch
 bug and problem are related to PR which has unique branch release/X.X.X from which to create it.
 Create PR only to next release branch. Then when that PR is merged to next release branch, PR will be created to merge to future release branch from next release branch. This way, changes done in next release branch for the PR merge can be reused for future release branch.
 
+## Process
 - https://github.com/organizations/devopscodegen/repositories/new
-    - Repository name : branching-strategy-demo
-    - Description : Branching strategy demo
+    - Repository name : branching-demo
+    - Description : Branching demo
     - Radio button - Public checkbox
     - Dropdown - Choose a license : MIT License
     - Button - Create repository
-- https://github.com/devopscodegen/branching-strategy-demo/branches
+- https://github.com/devopscodegen/branching-demo/branches
     - Button - New branch
     - New branch name - release/0.0
     - Dropdown - Source : main
-- https://github.com/devopscodegen/branching-strategy-demo/settings
+- https://github.com/devopscodegen/branching-demo/settings
     - Section : Default Branch
     - Button : Switch to another branch
     - Dropdown : release/0.0
     - Button : Update
     - Button : I understand, update the default branch.
-- https://github.com/devopscodegen/branching-strategy-demo/branches
+- https://github.com/devopscodegen/branching-demo/branches
     - For main branch, Button : delete
 - Create empty demo.txt in release/0.0 branch.
-- https://github.com/devopscodegen/branching-strategy-demo/milestones/new
-    - Title : release/1.0
+- https://github.com/devopscodegen/branching-demo/milestones/new
+    - Title : release/202408.9
     - Button - Create milestone
-    - Automatically create release/1.0 branch from release/0.0 branch
-- https://github.com/devopscodegen/branching-strategy-demo/labels
+    - Automatically create release/202408.9 branch from release/0.0 branch
+- https://github.com/devopscodegen/branching-demo/labels
     - Button - New label
     - Label name - feature
     - Color - green
-- https://github.com/devopscodegen/branching-strategy-demo/labels
+- https://github.com/devopscodegen/branching-demo/labels
     - Button - New label
     - Label name - problem
     - Color - red
-- https://github.com/devopscodegen/branching-strategy-demo/labels
+- https://github.com/devopscodegen/branching-demo/labels
     - bug label edit - Remove description
     - change color to blue
-- https://github.com/devopscodegen/branching-strategy-demo/labels
+- https://github.com/devopscodegen/branching-demo/labels
     - delete all labels except feature, bug and problem.
-- https://github.com/devopscodegen/branching-strategy-demo/issues/new
+- https://github.com/devopscodegen/branching-demo/issues/new
     - Add a title : feature 1 of release/1.0
     - Assignees : assign yourself
     - Labels : feature
     - Milestone : release/1.0
     - Button - Submit new issue
     - Automatically create feature/feature_1_of_release_1_0 branch from release/1.0 branch
-- https://github.com/devopscodegen/branching-strategy-demo/issues/1
+- https://github.com/devopscodegen/branching-demo/issues/1
     - Development : Connect feature/feature_1_of_release_1_0 branch to issue
-- https://github.com/devopscodegen/branching-strategy-demo/issues/new
+- https://github.com/devopscodegen/branching-demo/issues/new
     - Add a title : feature 2 of release/1.0
     - Assignees : assign yourself
     - Labels : feature
     - Milestone : release/1.0
     - Button - Submit new issue
     - Automatically create feature/feature_2_of_release_1_0 branch from release/1.0 branch
-- https://github.com/devopscodegen/branching-strategy-demo/issues/2
+- https://github.com/devopscodegen/branching-demo/issues/2
     - Development : Connect feature/feature_2_of_release_1_0 branch to issue
