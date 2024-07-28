@@ -1,46 +1,277 @@
 # Branching Strategy
 
-## Glossary
-| Term | Description |
-| --- | --- |
-| Repository | Github repository for storing code |
-| Project management application | Jira |
-| Project | Software development project.<br>Created by project lead in project management application.<br>Issues of type feature, bug and problem are created in it.<br>Example : jira scrum software project. |
-| Release | Created by release manager in release management application.<br>Release management application automatically creates release/ branch for each release (see Higher releases Term for more information).<br>Feature issues are scoped to release.<br>Example : release 1, release 2.<br>Multiple releases can be active at one time which is true for os and middleware application components.<br>Example : kubernetes has 4 active releases 27, 28, 29 and 30. |
-| Release date | Each release has a scheduled date to be released to customers or production.|
-| Feature | Feature is scoped to a release.<br>Feature issue is created in project by project lead.<br>Project management application automatically creates feature/<feature issue number> branch.<br>Developer checks out this branch and pushes changes to it.<br>Every day, developer needs to create pull request from feature/<feature issue number> branch to release/ branch and merge it for continuous integration.<br>Once all features scoped to the release are merged, release is ready for release.<br>Features are of below types<br>- Functional<br>- Operational excellence (devops, readability, maintainability)<br>- Security (vulnerabilities)<br>- Reliability (disaster recovery, high availability)<br>- Performance efficiency (load balancing)<br>- Cost optimization|
-| Problem | After all testing is successful, CI/CD pipeline waits for manual approval before deploying to production or releasing to customers.<br>Once release manager provides this approval, it is deployed to production or released to customers and a tag named released/<timestamp> is added to the release/ branch and feature issues are updated as closed for release/.<br>Once this type of released/<timestamp> tag is added to the release/ branch, no feature issues can be created in project and no feature branches can be created.<br>For any issues identified after this point in time, a problem issue is created in project.<br>Project management application automatically creates problem/<problem issue number> branch.<br>Developer checks out this branch and pushes changes to it.<br>Once fix is ready, developer needs to create pull request from problem/<problem issue number> branch to release/ branch and merge it.<br>After all testing is successful, CI/CD pipeline waits for manual approval before deploying to production or releasing to customers.<br>Once release manager provides this approval, it is deployed to production or released to customers and a tag named released/<timestamp> is added to the release/ branch and problem issues are updated as closed for release/.<br>Problems are of below types<br>- Functional<br>- Operational excellence (devops, readability, maintainability)<br>- Security (vulnerabilities)<br>- Reliability (disaster recovery, high availability)<br>- Performance efficiency (load balancing)<br>- Cost optimization|
-| Bug | When CI/CD pipeline runs automated testing of different types - pre-deployment security scanning, contract testing, simulated testing, integration testing, end to end testing, performance testing, post-deployment security scanning, etc.<br>If CI/CD pipeline fails, bug issue is created in project.<br>Developers make changes to feature/ branch before release or problem/ branch after release and create PR from feature/ or problem/ branch to release branch.<br>If all testing is successful, then the bug issue is closed.<br>CI/CD pipeline may do testing in parallel for some environments, so multiple bug/ issues may be created one for each environment where testing failed.|
-| Pre release | Once all features are developed and we want the customers to provide feedback, release manager can add pre-released/<timestamp> tag.<br>Based on customer feedback, bug issues can be created in project.<br>Once all bugs are fixed, then release manager can add released/<timestamp> tag.<br>Once this type of released/<timestamp> tag is added to the release/ branch, no feature issues can be created in project and no feature branches can be created.<br>For any issues identified after this point in time, a problem issue is created in project.
-| Higher releases | For next release, new release/ branch is created from latest pre-released/<timestamp> or released/<timestamp> tag of previous release.<br>For every existing (after the latest pre-released/<timestamp> or released/<timestamp> tag) or new pull request merged to previous release/ branches, a PR is created to this release/ branch.<br>Project issue is updated with this PR information and project issue cannot be closed until these PRs are merged and CI/CD pipeline completes automated testing.<br>Example: If feature/ or problem/ is merged to release/202408.9, automatic PR is created from merge commit of feature/ or problem/ -> release/202408.9 to release/2.0 and release/3.0. This is linked to the feature or problem issue in the project and feature or problem issue cannot be closed until these PRs are merged and CI/CD pipeline completes automated testing for them.<br>If CI/CD pipeline fails, bug issue is created in project. |
-| branch | No main branch.<br>3 types of branches - feature/<feature issue number>, problem/<problem issue number>, release/202408.9.<br>All branches are created automatically by project management and release management applications.|
-
-bug may be associated with multiple features. So we need bug issue and branch.
-problem may be associated with multiple features. So we need problem issue and branch.
-PR is getting update with next commits. So better to create release/202408.9.1 Frozen Branch for every PR merge to release/202408.9 branch. Patch number can be incremented or it can be the PR number. Better to increment because PR numbers will continue to rise in the future as number of releases increases.
-for each created milestone release/X.X, release branch release/X.X is created.
-for each created feature, bug and problem issue, feature, bug and problem branch needs to be created.
-bug and problem are related to PR which has unique branch release/X.X.X from which to create it.
-Create PR only to next release branch. Then when that PR is merged to next release branch, PR will be created to merge to future release branch from next release branch. This way, changes done in next release branch for the PR merge can be reused for future release branch.
-
-## Process
+## Tutorial
 
 | Step | Link | Inputs |
 | --- | --- | --- |
-| Create branching-demo repository | https://github.com/organizations/devopscodegen/repositories/new | Repository name = branching-demo<br> Description = Branching demo<br>Visibility = Public - Anyone on the internet can see this repository. You choose who can commit.<br>Choose a license : MIT License<br>Click on ```Create repository``` button |
-| Create release/0.0 branch from main branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = release/0.0<br>Source = main<br>Click on ```Create new branch``` button |
-| Change default branch from main to release/0.0 | https://github.com/devopscodegen/branching-demo/settings | Section = Default Branch<br>Click on ```Switch to another branch``` icon button<br>Select ```release/0.0``` in Filter branches dropdown<br>Click on ```Update``` button<br>Click on ```I understand, update the default branch.``` button |
-| Delete main branch | https://github.com/devopscodegen/branching-demo/branches | Click on ```Delete``` icon button to the right of main branch |
-| Create empty demo.md in release/0.0 branch | https://github.com/devopscodegen/branching-demo/new/release/0.0 | Name your file = demo.md<br>Click on ```Commit changes...``` button<br>Click on ```Commit changes``` button |
-| Create release/202408.9 milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = release/202408.9<br>Due date (optional) = 09/08/2024<br>Click on ```Create milestone``` button<br>Automatically create release/202408.9 branch from release/0.0 branch |
-| Create pr/0.0_to_202408.9 branch from release/0.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = pr/0.0_to_202408.9<br>Source = release/0.0<br>Click on ```Create new branch``` button |
-| Create release/202408.9 branch from pr/0.0_to_202408.9 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = release/202408.9<br>Source = pr/0.0_to_202408.9<br>Click on ```Create new branch``` button |
-| Change default branch from release/0.0 to release/202408.9 | https://github.com/devopscodegen/branching-demo/settings | Section = Default Branch<br>Click on ```Switch to another branch``` icon button<br>Select ```release/202408.9``` in Filter branches dropdown<br>Click on ```Update``` button<br>Click on ```I understand, update the default branch.``` button |
-| Add feature label | https://github.com/devopscodegen/branching-demo/labels | Click on ```New label``` button<br>Label name = feature<br>Color = #0E8A16 (green)<br>Click on ```Create label``` button|
-| Add problem label | https://github.com/devopscodegen/branching-demo/labels | Click on ```New label``` button<br>Label name = problem<br>Color = #B60205 (red)<br>Click on ```Create label``` button|
-| Remove description and change color to blue of bug label | https://github.com/devopscodegen/branching-demo/labels | Click on ```Edit``` button to the right of bug label<br>Remove ```Something isn't working``` from Description<br>Change Color to #1D76DB (blue)<br>Click on ```Save changes``` button|
-| Delete all labels except feature, bug and problem | https://github.com/devopscodegen/branching-demo/labels | Click on ```Delete``` button to the right of all labels except feature, bug and problem<br>Click on OK in ```Are you sure? Deleting a label will remove it from all issues and pull requests.``` dialog box |
-| Create issue for ```release/202408.9 feature 1``` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = release/202408.9 feature 1<br>Assignees = assign yourself<br>Labels = feature<br>Milestone = release/202408.9<br>Click on ```Submit new issue``` button |
-| Create feature/release_202408_9_feature_1 branch from release/202408.9 branch for Issue ```release/202408.9 feature 1``` | https://github.com/devopscodegen/branching-demo/issues/1 | Click on ```Create a branch``` link in Development section<br>New branch name = feature/release_202408_9_feature_1<br>Click on ```Change branch source``` link<br>Branch source = release/202408.9<br>Click on ```Create branch``` button |
-| Create issue for ```release/202408.9 feature 2``` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = release/202408.9 feature 2<br>Assignees = assign yourself<br>Labels = feature<br>Milestone = release/202408.9<br>Click on ```Submit new issue``` button |
-| Create feature/release_202408_9_feature_2 branch from release/202408.9 branch for Issue ```release/202408.9 feature 2``` | https://github.com/devopscodegen/branching-demo/issues/2 | Click on ```Create a branch``` link in Development section<br>New branch name = feature/release_202408_9_feature_2<br>Click on ```Change branch source``` link<br>Branch source = release/202408.9<br>Click on ```Create branch``` button |
+| Create branching-demo repository | https://github.com/organizations/devopscodegen/repositories/new | Repository name = `branching-demo`<br> Description = `Branching demo`<br>Visibility = `Public - Anyone on the internet can see this repository. You choose who can commit.`<br>Choose a license : MIT License<br>Click on `Create repository` button |
+| Disable Allow merge commits and Allow rebase merging in Pull Requests | https://github.com/devopscodegen/branching-demo/settings | Uncheck `Allow merge commits` and `Allow rebase merging` in Pull Requests section<br>Change `Default commit message` of `Allow squash merging` to `Pull Request title` |
+| Create release/0.0 branch from main branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/0.0`<br>Source = `main`<br>Click on `Create new branch` button |
+| Change default branch from main to release/0.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/0.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Delete main branch | https://github.com/devopscodegen/branching-demo/branches | Click on `Delete` icon button to the right of main branch |
+| Create demo.md in release/0.0 branch with below content| https://github.com/devopscodegen/branching-demo/new/release/0.0 | Name your file = `demo.md`<br>Click on `Commit changes...` button<br>Click on `Commit changes` button |
+
+```
+
+|release|feature/bug/problem|commit|
+|---|---|---|
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Add `protect release branches` ruleset | https://github.com/devopscodegen/branching-demo/settings/rules/new?target=branch | Ruleset Name = `protect release branches`<br>Enforcement status = `Active`<br>Add Target -> Include by pattern<br>Branch naming pattern = `release/*`<br>Click on `Add Inclusion pattern` button<br>Check `Restrict deletions`, `Require linear history`, `Require a pull request before merging`, `Block force pushes` in `Branch protections` in Rules<br>Click on `Create` button |
+| Create `release/1.0` milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/1.0`<br>Click on `Create milestone` button |
+| Create release/1.0 branch from release/0.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/1.0`<br>Source = `release/0.0`<br>Click on `Create new branch` button |
+| Change default branch from release/0.0 to release/1.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/1.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Add feature label | https://github.com/devopscodegen/branching-demo/labels | Click on `New label` button<br>Label name = `feature`<br>Color = `#0E8A16 (green)`<br>Click on `Create label` button|
+| Add problem label | https://github.com/devopscodegen/branching-demo/labels | Click on `New label` button<br>Label name = `problem`<br>Color = `#B60205 (red)`<br>Click on `Create label` button|
+| Remove description and change color to blue of bug label | https://github.com/devopscodegen/branching-demo/labels | Click on `Edit` button to the right of bug label<br>Remove `Something isn't working` from Description<br>Change Color to #1D76DB (blue)<br>Click on `Save changes` button|
+| Delete all labels except feature, bug and problem | https://github.com/devopscodegen/branching-demo/labels | Click on `Delete` button to the right of all labels except feature, bug and problem<br>Click on OK in `Are you sure? Deleting a label will remove it from all issues and pull requests.` dialog box |
+| Create issue for `release/1.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/1.0 feature 1`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/1.0`<br>Click on `Submit new issue` button |
+| Create feature/release_1_0_feature_1 branch from release/1.0 branch for Issue `release/1.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/1 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_1_0_feature_1`<br>Click on `Change branch source` link<br>Branch source = `release/1.0`<br>Click on `Create branch` button |
+| Create issue for `release/1.0 feature 2` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/1.0 feature 2`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/1.0`<br>Click on `Submit new issue` button |
+| Create feature/release_1_0_feature_2 branch from release/1.0 branch for Issue `release/1.0 feature 2` | https://github.com/devopscodegen/branching-demo/issues/2 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_1_0_feature_2`<br>Click on `Change branch source` link<br>Branch source = `release/1.0`<br>Click on `Create branch` button |
+| Make changes to feature/release_1_0_feature_1 branch using following commands | | |
+
+```
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout feature/release_1_0_feature_1
+echo "|1.0|feature1|1|" >> demo.md
+git add .
+git commit -m "release/1.0 feature 1 commit 1"
+echo "|1.0|feature1|2|" >> demo.md
+git add .
+git commit -m "release/1.0 feature 1 commit 2"
+git rebase -i HEAD~2
+# Change pick to squash for release/1.0 feature 1 commit 2
+# Save the rebase instruction with :wq
+# Save the combined commit message with :wq
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Make changes to feature/release_1_0_feature_2 branch using following commands | | |
+
+
+```
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout feature/release_1_0_feature_2
+echo "|1.0|feature2|1|" >> demo.md
+git add .
+git commit -m "release/1.0 feature 2 commit 1"
+git push
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from feature/release_1_0_feature_1 branch to release/1.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/1.0...feature/release_1_0_feature_1 | Click on `Create pull request` button<br>Add a title = `release/1.0 feature 1 commits 1 and 2 to release/1.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/1.0`<br>Click on `Create pull request` button |
+| Create pull request from feature/release_1_0_feature_2 branch to release/1.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/1.0...feature/release_1_0_feature_2 | Click on `Create pull request` button<br>Add a title = `release/1.0 feature 2 commit 1 to release/1.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/1.0`<br>Click on `Create pull request` button |
+| Merge Pull Request `release/1.0 feature 1 commits 1 and 2 to release/1.0` | https://github.com/devopscodegen/branching-demo/pull/3 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v1.0.1 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/1.0
+git tag v1.0.1
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Merge release/1.0 branch changes to feature/release_1_0_feature_2 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git pull origin release/1.0
+git checkout feature/release_1_0_feature_2
+git merge release/1.0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Change demo.md file to have following contents | | |
+
+```
+
+|release|feature/bug/problem|commit|
+|---|---|---|
+|1.0|feature1|1|
+|1.0|feature1|2|
+|1.0|feature2|1|
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Continue the Merge of release/1.0 branch changes to feature/release_1_0_feature_2 using following commands | | |
+
+```
+git add .
+git commit -m "Resolve merge conflict by incorporating both suggestions"
+git push -u origin feature/release_1_0_feature_2
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Merge Pull Request `release/1.0 feature 2 commit 1 to release/1.0` | https://github.com/devopscodegen/branching-demo/pull/4 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v1.0.2 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/1.0
+git tag v1.0.2
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create issue for `release/1.0 bug 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/1.0 bug 1`<br>Assignees = `assign yourself`<br>Labels = `bug`<br>Milestone = `release/1.0`<br>Click on `Submit new issue` button |
+| Create branch bug/release_1_0_bug_1 from tag v1.0.2 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch bug/release_1_0_bug_1 v1.0.2
+git checkout bug/release_1_0_bug_1
+git push --set-upstream origin bug/release_1_0_bug_1
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Link bug/release_1_0_bug_1 branch to issue `release/1.0 bug 1` | https://github.com/devopscodegen/branching-demo/issues/5 | Click on gear icon in Development section<br>Select repository devopscodegen/branching-demo<br>Select branch bug/release_1_0_bug_1<br>Click `Apply` button |
+| Create release/2.0 milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/2.0`<br>Click on `Create milestone` button |
+| Create release/2.0 branch from release/1.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/2.0`<br>Source = `release/1.0`<br>Click on `Create new branch` button |
+| Change default branch from release/1.0 to release/2.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/2.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Create issue for `release/2.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/2.0 feature 1`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/2.0`<br>Click on `Submit new issue` button |
+| Create feature/release_2_0_feature_1 branch from release/2.0 branch for Issue `release/2.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/6 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_2_0_feature_1`<br>Click on `Change branch source` link<br>Branch source = `release/2.0`<br>Click on `Create branch` button |
+| Make changes to feature/release_2_0_feature_1 branch using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout feature/release_2_0_feature_1
+echo "|2.0|feature1|1|" >> demo.md
+git add .
+git commit -m "release/2.0 feature 1 commit 1"
+git push
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from feature/release_2_0_feature_1 branch to release/2.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/2.0...feature/release_2_0_feature_1 | Click on `Create pull request` button<br>Add a title = `release/2.0 feature 1 commit 1 to release/2.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/2.0`<br>Click on `Create pull request` button |
+| Merge Pull Request `release/2.0 feature 1 commit 1 to release/2.0` | https://github.com/devopscodegen/branching-demo/pull/7 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v2.0.1 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/2.0
+git tag v2.0.1
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Make changes to bug/release_1_0_bug_1 branch using following commands | | |
+
+
+```
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout bug/release_1_0_bug_1
+echo "|1.0|bug1|1|" >> demo.md
+git add .
+git commit -m "release/1.0 bug 1 commit 1"
+git push
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from bug/release_1_0_bug_1 branch to release/1.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/1.0...bug/release_1_0_bug_1 | Click on `Create pull request` button<br>Add a title = `release/1.0 bug 1 commit 1 to release/1.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/1.0`<br>Click on `Create pull request` button |
+| Merge Pull Request `release/1.0 bug 1 commit 1 to release/1.0` | https://github.com/devopscodegen/branching-demo/pull/8 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v1.0.3 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/1.0
+git tag v1.0.3
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create branch merge/tag_v_1_0_3_to_release_2_0 from tag v1.0.3 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch merge/tag_v_1_0_3_to_release_2_0 v1.0.3
+git checkout merge/tag_v_1_0_3_to_release_2_0
+git push --set-upstream origin merge/tag_v_1_0_3_to_release_2_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from merge/tag_v_1_0_3_to_release_2_0 branch to release/2.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/2.0...merge/tag_v_1_0_3_to_release_2_0 | Click on `Create pull request` button<br>Add a title = `Merge tag v1.0.3 to release/2.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/2.0`<br>Click on `Create pull request` button |
+| Merge release/2.0 branch changes to merge/tag_v_1_0_3_to_release_2_0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git pull origin release/2.0
+git checkout merge/tag_v_1_0_3_to_release_2_0
+git merge release/2.0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Change demo.md file to have following contents | | |
+
+```
+
+|release|feature/bug/problem|commit|
+|---|---|---|
+|1.0|feature1|1|
+|1.0|feature1|2|
+|1.0|feature2|1|
+|1.0|bug1|1|
+|2.0|feature1|1|
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Continue the Merge of release/2.0 branch changes to merge/tag_v_1_0_3_to_release_2_0 using following commands | | |
+
+```
+git add .
+git commit -m "Resolve merge conflict by incorporating both suggestions"
+git push -u origin merge/tag_v_1_0_3_to_release_2_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Merge Pull Request `Merge tag v1.0.3 to release/2.0` | https://github.com/devopscodegen/branching-demo/pull/9 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button<br>Click on `Delete branch` button |
+| Add tag v2.0.2 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/2.0
+git tag v2.0.2
+git push --tags
+```
