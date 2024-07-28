@@ -88,7 +88,7 @@ git push --tags
 rm -rf /tmp/branching-demo
 cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
 cd branching-demo
-git pull origin release/1.0
+git checkout release/1.0
 git checkout feature/release_1_0_feature_2
 git merge release/1.0
 ```
@@ -232,7 +232,7 @@ git push --set-upstream origin merge/tag_v_1_0_3_to_release_2_0
 rm -rf /tmp/branching-demo
 cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
 cd branching-demo
-git pull origin release/2.0
+git checkout release/2.0
 git checkout merge/tag_v_1_0_3_to_release_2_0
 git merge release/2.0
 ```
@@ -273,5 +273,335 @@ cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
 cd branching-demo
 git checkout release/2.0
 git tag v2.0.2
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create release/3.0 milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/3.0`<br>Click on `Create milestone` button |
+| Create release/3.0 branch from release/2.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/3.0`<br>Source = `release/2.0`<br>Click on `Create new branch` button |
+| Change default branch from release/2.0 to release/3.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/3.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Create issue for `release/3.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/3.0 feature 1`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/3.0`<br>Click on `Submit new issue` button |
+| Create feature/release_3_0_feature_1 branch from release/3.0 branch for Issue `release/3.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/10 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_3_0_feature_1`<br>Click on `Change branch source` link<br>Branch source = `release/3.0`<br>Click on `Create branch` button |
+| Make changes to feature/release_3_0_feature_1 branch using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout feature/release_3_0_feature_1
+echo "|3.0|feature1|1|" >> demo.md
+git add .
+git commit -m "release/3.0 feature 1 commit 1"
+git push
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from feature/release_3_0_feature_1 branch to release/3.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/3.0...feature/release_3_0_feature_1 | Click on `Create pull request` button<br>Add a title = `release/3.0 feature 1 commit 1 to release/3.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/3.0`<br>Click on `Create pull request` button |
+| Merge Pull Request `release/3.0 feature 1 commit 1 to release/3.0` | https://github.com/devopscodegen/branching-demo/pull/11 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v3.0.1 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/3.0
+git tag v3.0.1
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create issue for `release/2.0 bug 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/2.0 bug 1`<br>Assignees = `assign yourself`<br>Labels = `bug`<br>Milestone = `release/2.0`<br>Click on `Submit new issue` button |
+| Create branch bug/release_2_0_bug_1 from tag v2.0.2 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch bug/release_2_0_bug_1 v2.0.2
+git checkout bug/release_2_0_bug_1
+git push --set-upstream origin bug/release_2_0_bug_1
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Link bug/release_2_0_bug_1 branch to issue `release/2.0 bug 1` | https://github.com/devopscodegen/branching-demo/issues/12 | Click on gear icon in Development section<br>Select repository devopscodegen/branching-demo<br>Select branch bug/release_2_0_bug_1<br>Click `Apply` button |
+| Make changes to bug/release_2_0_bug_1 branch using following commands | | |
+
+
+```
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout bug/release_2_0_bug_1
+echo "|2.0|bug1|1|" >> demo.md
+git add .
+git commit -m "release/2.0 bug 1 commit 1"
+git push
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from bug/release_2_0_bug_1 branch to release/2.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/2.0...bug/release_2_0_bug_1 | Click on `Create pull request` button<br>Add a title = `release/2.0 bug 1 commit 1 to release/2.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/2.0`<br>Click on `Create pull request` button |
+| Merge Pull Request `release/2.0 bug 1 commit 1 to release/2.0` | https://github.com/devopscodegen/branching-demo/pull/13 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v2.0.3 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/2.0
+git tag v2.0.3
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create issue for `release/1.0 problem 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/1.0 problem 1`<br>Assignees = `assign yourself`<br>Labels = `problem`<br>Milestone = `release/1.0`<br>Click on `Submit new issue` button |
+| Create branch problem/release_1_0_problem_1 from tag v1.0.3 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch problem/release_1_0_problem_1 v1.0.3
+git checkout problem/release_1_0_problem_1
+git push --set-upstream origin problem/release_1_0_problem_1
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Link problem/release_1_0_problem_1 branch to issue `release/1.0 problem 1` | https://github.com/devopscodegen/branching-demo/issues/14 | Click on gear icon in Development section<br>Select repository devopscodegen/branching-demo<br>Select branch problem/release_1_0_problem_1<br>Click `Apply` button |
+| Make changes to problem/release_1_0_problem_1 branch using following commands | | |
+
+
+```
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout problem/release_1_0_problem_1
+echo "|1.0|problem1|1|" >> demo.md
+git add .
+git commit -m "release/1.0 problem 1 commit 1"
+git push
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from problem/release_1_0_problem_1 branch to release/1.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/1.0...problem/release_1_0_problem_1 | Click on `Create pull request` button<br>Add a title = `release/1.0 problem 1 commit 1 to release/1.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/1.0`<br>Click on `Create pull request` button |
+| Merge Pull Request `release/1.0 problem 1 commit 1 to release/1.0` | https://github.com/devopscodegen/branching-demo/pull/15 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button |
+| Add tag v1.0.4 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/1.0
+git tag v1.0.4
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create branch merge/tag_v_2_0_3_to_release_3_0 from tag v2.0.3 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch merge/tag_v_2_0_3_to_release_3_0 v2.0.3
+git checkout merge/tag_v_2_0_3_to_release_3_0
+git push --set-upstream origin merge/tag_v_2_0_3_to_release_3_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from merge/tag_v_2_0_3_to_release_3_0 branch to release/3.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/3.0...merge/tag_v_2_0_3_to_release_3_0 | Click on `Create pull request` button<br>Add a title = `Merge tag v2.0.3 to release/3.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/3.0`<br>Click on `Create pull request` button |
+| Merge release/3.0 branch changes to merge/tag_v_2_0_3_to_release_3_0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/3.0
+git checkout merge/tag_v_2_0_3_to_release_3_0
+git merge release/3.0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Change demo.md file to have following contents | | |
+
+```
+
+|release|feature/bug/problem|commit|
+|---|---|---|
+|1.0|feature1|1|
+|1.0|feature1|2|
+|1.0|feature2|1|
+|1.0|bug1|1|
+|2.0|feature1|1|
+|2.0|bug1|1|
+|3.0|feature1|1|
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Continue the Merge of release/3.0 branch changes to merge/tag_v_2_0_3_to_release_3_0 using following commands | | |
+
+```
+git add .
+git commit -m "Resolve merge conflict by incorporating both suggestions"
+git push -u origin merge/tag_v_2_0_3_to_release_3_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Merge Pull Request `Merge tag v2.0.3 to release/3.0` | https://github.com/devopscodegen/branching-demo/pull/16 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button<br>Click on `Delete branch` button |
+| Add tag v3.0.2 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/3.0
+git tag v3.0.2
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create branch merge/tag_v_1_0_4_to_release_2_0 from tag v1.0.4 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch merge/tag_v_1_0_4_to_release_2_0 v1.0.4
+git checkout merge/tag_v_1_0_4_to_release_2_0
+git push --set-upstream origin merge/tag_v_1_0_4_to_release_2_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from merge/tag_v_1_0_4_to_release_2_0 branch to release/2.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/2.0...merge/tag_v_1_0_4_to_release_2_0 | Click on `Create pull request` button<br>Add a title = `Merge tag v1.0.4 to release/2.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/2.0`<br>Click on `Create pull request` button |
+| Merge release/2.0 branch changes to merge/tag_v_1_0_4_to_release_2_0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/2.0
+git checkout merge/tag_v_1_0_4_to_release_2_0
+git merge release/2.0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Change demo.md file to have following contents | | |
+
+```
+
+|release|feature/bug/problem|commit|
+|---|---|---|
+|1.0|feature1|1|
+|1.0|feature1|2|
+|1.0|feature2|1|
+|1.0|bug1|1|
+|1.0|problem1|1|
+|2.0|feature1|1|
+|2.0|bug1|1|
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Continue the Merge of release/2.0 branch changes to merge/tag_v_1_0_4_to_release_2_0 using following commands | | |
+
+```
+git add .
+git commit -m "Resolve merge conflict by incorporating both suggestions"
+git push -u origin merge/tag_v_1_0_4_to_release_2_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Merge Pull Request `Merge tag v1.0.4 to release/2.0` | https://github.com/devopscodegen/branching-demo/pull/17 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button<br>Click on `Delete branch` button |
+| Add tag v2.0.4 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/2.0
+git tag v2.0.4
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create branch merge/tag_v_2_0_4_to_release_3_0 from tag v2.0.4 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git branch merge/tag_v_2_0_4_to_release_3_0 v2.0.4
+git checkout merge/tag_v_2_0_4_to_release_3_0
+git push --set-upstream origin merge/tag_v_2_0_4_to_release_3_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Create pull request from merge/tag_v_2_0_4_to_release_3_0 branch to release/3.0 branch | https://github.com/devopscodegen/branching-demo/compare/release/3.0...merge/tag_v_2_0_4_to_release_3_0 | Click on `Create pull request` button<br>Add a title = `Merge tag v2.0.4 to release/3.0`<br>Assignees = `Assign yourself`<br>Milestone = `release/3.0`<br>Click on `Create pull request` button |
+| Merge release/3.0 branch changes to merge/tag_v_2_0_4_to_release_3_0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/3.0
+git checkout merge/tag_v_2_0_4_to_release_3_0
+git merge release/3.0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Change demo.md file to have following contents | | |
+
+```
+
+|release|feature/bug/problem|commit|
+|---|---|---|
+|1.0|feature1|1|
+|1.0|feature1|2|
+|1.0|feature2|1|
+|1.0|bug1|1|
+|1.0|problem1|1|
+|2.0|feature1|1|
+|2.0|bug1|1|
+|3.0|feature1|1|
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Continue the Merge of release/3.0 branch changes to merge/tag_v_2_0_4_to_release_3_0 using following commands | | |
+
+```
+git add .
+git commit -m "Resolve merge conflict by incorporating both suggestions"
+git push -u origin merge/tag_v_2_0_4_to_release_3_0
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
+| Merge Pull Request `Merge tag v2.0.4 to release/3.0` | https://github.com/devopscodegen/branching-demo/pull/18 | Click on `Squash and merge` button<br>Click on `Confirm squash and merge` button<br>Click on `Delete branch` button |
+| Add tag v3.0.3 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/3.0
+git tag v3.0.3
 git push --tags
 ```
