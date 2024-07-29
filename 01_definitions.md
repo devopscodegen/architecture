@@ -72,7 +72,6 @@ Multiple types
 | Backend | Java, Python, Javascript, Spring, Django, Express, NodeJS |
 | Data Ingestion and Transformation | Python, Pyspark, Spark |
 | BI Reports and Dashboards | PowerBI |
-| Libraries / Frameworks | |
 | Embedded / IoT | |
 | Robotics | |
 | Generative AI | Langchain, Llamaindex |
@@ -81,13 +80,25 @@ Multiple types
 | Integration | Mulesoft |
 | BPM | Bizagi |
 | Automation Scripts | InfraOps, CloudOps, NetOps - Python, Shell scripting | 
-<br>
+<br><br>
+
+# Software application components dependencies
+Software application components import functions and classes from Libraries / Frameworks and call them using defined parameters and return values.
+
+Software application components are deployed to and use middlewares like language runtimes, databases, messaging, caching, etc.
+
+Middlewares are deployed to Operating Systems.
+
+Operating Systems are installed on Servers.
+
+Servers are deployed to data centers, private clouds and public clouds.
+<br><br>
 
 # DevOps
 - Each software application component will have its own source code repository, devops code repository, CI/CD pipeline and artifact repositories.
 - In addition to the above, from devops perspective, we need to create one devops code repository, CI/CD pipeline and artifact repositories for each of the below 
     - OS and/or middleware combination base images.
-    - Common infrastructure code, configuration and secrets of all software application components of each organizational unit.
+    - Common public cloud and private cloud infrastructure code, configuration and secrets of all software application components of each organizational unit.
 <br><br>
 
 # FAQs

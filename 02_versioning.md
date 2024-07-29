@@ -1,11 +1,6 @@
-# Recommendation
+# Semantic versioning
 
-It is recommended to use ***3. Release versioning***
-
-Explanation is provided for Semantic versioning, Calendar versioning and Release calendar versioning just to show the differences between them and Release versioning.
-<br><br>
-
-# 1. Semantic versioning
+## Summary
 https://semver.org
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
@@ -17,13 +12,47 @@ MINOR version when you add functionality in a backward compatible manner
 PATCH version when you make backward compatible bug fixes
 
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
-<br><br><br>
+<br>
+
+## Recommendation
+Recommended to use for versioning common libraries or frameworks on which application components are dependant on.
+
+Application components import functions and classes from these libraries or frameworks and call these functions using fixed parameters and return values. 
+
+If these libraries or frameworks remove these functions, they increment the major version. 
+
+If these libraries or frameworks add or remove parameters to these functions in a backward compatible manner, then they increment the minor version.
+
+For example : 
+- Our application component was using _app_ctx_stack object of flask python framework to get the current application context.
+- We used pip requirement version specifier flask>=2.0.0,<3.0.0 in our requirements.txt file.
+- _app_ctx_stack object was deprecated in version 2.2.0 and removed in version 3.0.0. Major version was incremented from 2 to 3 because _app_ctx_stack object was removed and hence any application component code that is using this _app_ctx_stack object would break.
+- But because we used pip requirement version specifier flask>=2.0.0,<3.0.0, pip did not upgrade flask to version 3.0.0 and hence our application component did not break even though we are still using _app_ctx_stack object.
+
+Many open source libraries and frameworks use semantic versioning.
+
+It is better to use contract testing instead of relying on semantic versioning when we make incompatible API changes between  application components like changes to the REST api.
+<br><br>
 
 # 2. Calendar versioning
-https://calver.org
-<br><br><br>
 
-# 3. Release versioning ( Recommended )
+## Summary
+https://calver.org
+
+## Recommendation
+Recommended to use for versioning operating systems and middleware on which application components are deployed to.
+
+These operating systems and middleware have only 1 release per year and have many long-term support (LTS) releases. 
+
+They do not provide functions that are imported by application components. Instead, application components are deployed to them.
+
+For example :
+- Ubuntu derives additional benefit from its CalVer scheme, by integrating it with their support schedule. 
+- Ubuntu currently has five-year support periods for their long-term support (LTS) releases, and only 9 months for non-LTS releases. 
+- Thanks to CalVer and elementary arithmetic, any user can easily determine whether their version is still supported. The current LTS release at the time of writing, 16.04, will be supported until April 2021.
+<br><br>
+
+# Release versioning ( Recommended for application components )
 ## Versions
 ```
 <MAJOR version>.<MINOR version>.<PATCH version>
@@ -51,7 +80,7 @@ CI/CD pipeline runs once for each version number MAJOR.MINOR.PATCH
 Every time, we increment MAJOR version, we reset MINOR and PATCH versions to 0.
 
 Every time, we increment MINOR version, we keep MAJOR version the same and reset PATCH version to 0.
-<br><br>
+<br>
 
 ## Examples
 
@@ -78,7 +107,7 @@ After releases 1.0, 2.0 and release 1.100 are created, if we decide that a new r
 - Reset the PATCH version to 0
 - Therefore, versions are 1.50.0, 1.50.1, 1.50.2, 1.50.3 and so on. 
 - Any one of these versions will be deployed to production.
-<br><br>
+<br>
 
 ## Optional versions
 
@@ -93,7 +122,7 @@ After releases 1.0, 2.0 and release 1.100 are created, if we decide that a new r
 - Jenkins CI/CD pipeline build timestamp
 ```date +%Y%m%d%H%M%S```
 - For example : 20240726155537
-<br><br>
+<br>
 
 ## Sets of testing environments
 We will have 3 sets of testing environments - current, next and future. Each release ```<MAJOR version>.<MINOR version>``` of each application component will be tagged to a particular set of testing environments so that CI/CD pipeline knows to which set of testing environments, it needs to deploy the build artifact. 
@@ -114,11 +143,21 @@ We will have 3 sets of testing environments - current, next and future. Each rel
 - We need to enable the feature toggle in both 1.0 of #1 and 2.0 of #2 using hotfix after 31st August after 1.0 of #1 goes into production and both are pointing to the current set of testing environment. 
 - When enabling the feature toggle, we need to test it in current set of testing environments.
 - Better approach is to have same deployment frequency and SDLC methodology for all application components. ( If we just do this for related application components and new relation is added in the future, we will have to make this change then which can be problematic so better to do it for all at once ). Difficult to achieve if we have SaaS products who have their own deployment frequency / release cycle.
+<br>
+
+## Recommendation
+Recommended to use for application components.
+
+Application components do not import the classes and functions of other application components instead they communicate using APIs. So we dont need to use semantic versioning.
+
+Application components have releases once every day, once every week, once every 2 weeks, once every 3 weeks, once every month or once every quarter. They dont have one release per year and long term support releases. So we dont need to use calendar versioning.
+
+It is better to use release versioning and contract testing instead of relying on semantic versioning when making incompatible API changes between application components like changes to the REST api, event, etc.
 <br><br>
 
 # 4. Release calendar versioning 
 
-## Reason for not recommending
+## Not recommended
 Release calendar versioning is similar to release versioning except that we can use the version number to identify when the release is planned to goto production.
 
 The planned date may change due to unforeseen circumstances.
