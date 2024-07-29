@@ -5,7 +5,7 @@
 - We are running this testing before creating container images, helm charts, etc. so we are not testing devops code like container image code, deployment code, etc.
 - Automated tests run in the testing container of the CI/CD pipeline.
 ### Testing data
-<BR>
+<br>
 
 ## Simulated testing
 ### Features
@@ -16,7 +16,7 @@
 - In contract testing, we add actual producer/upstream application components to check if our simulated assumptions are correct since contracts and mocks should be same.
 - In end to end testing, we are checking if adding this application component to consumer application components is causing bugs or not.
 ### Testing data
-<BR>
+<br>
 
 ## End to end testing
 ### Features
@@ -31,7 +31,7 @@
 - Automated tests run in the environment namespace which contains all application components and cloud middleware.
 - Since we are using cloud middleware instead of middleware containers (simulated testing), we are testing infrastucture code as well. 
 ### Testing data
-<BR>
+<br>
 
 ## Contract testing
 ### Features
@@ -45,22 +45,22 @@
     - If no, then need to wait and keep retrying till the contract testing is successful. Once it is successful, then only we need to deploy and run end to end testing. If end to end testing fails, then bug is in the consumer application component since the contract testing is successful and the contracts are same as the producer/upstream mocks used in simulated testing.
 - Separate environment is not required for contract testing. It is done in end to end testing environment before deployment.
 ### Testing data
-<BR>
+<br>
 
 ## Performance testing
 ### Features
 ### Testing data
-<BR>
+<br>
 
 ## Security scans
 ### Features
 ### Testing data
-<BR>
+<br>
 
 ## Reliability/Chaos engineering testing
 ### Features
 ### Testing data
-<BR>
+<br>
 
 ## Deployment strategy testing
 ### Features
@@ -68,7 +68,7 @@
 - Canary
 - Linear
 ### Testing data
-<BR>
+<br>
 
 ## Rollback testing
 ### Features
@@ -78,11 +78,11 @@
 - Producer/Upstream application components
 - Rollback strategy similar to deployment strategy - Gradual/One shot 
 ### Testing data
-<BR>
+<br>
 
 ## Notes
 - https://www.techtarget.com/searchsecurity/news/366596579/CrowdStrike-Content-validation-bug-led-to-global-outage
-<BR>
+<br>
 
 ## Crowdstrike global outage preliminary Post Incident Review
 This is CrowdStrike’s preliminary Post Incident Review (PIR). We will be detailing our full investigation in the forthcoming Root Cause Analysis that will be released publicly. Throughout this PIR, we have used generalized terminology to describe the Falcon platform for improved readability. Terminology in other documentation may be more specific and technical.

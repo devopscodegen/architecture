@@ -1,4 +1,4 @@
-# Branching Strategy
+# Branching Design
 
 ## Tutorial
 
@@ -20,13 +20,26 @@
 | Step | Link | Inputs |
 | --- | --- | --- |
 | Add `protect release branches` ruleset | https://github.com/devopscodegen/branching-demo/settings/rules/new?target=branch | Ruleset Name = `protect release branches`<br>Enforcement status = `Active`<br>Add Target -> Include by pattern<br>Branch naming pattern = `release/*`<br>Click on `Add Inclusion pattern` button<br>Check `Restrict deletions`, `Require linear history`, `Require a pull request before merging`, `Block force pushes` in `Branch protections` in Rules<br>Click on `Create` button |
-| Create `release/1.0` milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/1.0`<br>Click on `Create milestone` button |
-| Create release/1.0 branch from release/0.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/1.0`<br>Source = `release/0.0`<br>Click on `Create new branch` button |
-| Change default branch from release/0.0 to release/1.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/1.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
 | Add feature label | https://github.com/devopscodegen/branching-demo/labels | Click on `New label` button<br>Label name = `feature`<br>Color = `#0E8A16 (green)`<br>Click on `Create label` button|
 | Add problem label | https://github.com/devopscodegen/branching-demo/labels | Click on `New label` button<br>Label name = `problem`<br>Color = `#B60205 (red)`<br>Click on `Create label` button|
 | Remove description and change color to blue of bug label | https://github.com/devopscodegen/branching-demo/labels | Click on `Edit` button to the right of bug label<br>Remove `Something isn't working` from Description<br>Change Color to #1D76DB (blue)<br>Click on `Save changes` button|
 | Delete all labels except feature, bug and problem | https://github.com/devopscodegen/branching-demo/labels | Click on `Delete` button to the right of all labels except feature, bug and problem<br>Click on OK in `Are you sure? Deleting a label will remove it from all issues and pull requests.` dialog box |
+| Create `release/1.0` milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/1.0`<br>Click on `Create milestone` button |
+| Create release/1.0 branch from release/0.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/1.0`<br>Source = `release/0.0`<br>Click on `Create new branch` button |
+| Change default branch from release/0.0 to release/1.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/1.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Add tag v1.0.0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/1.0
+git tag v1.0.0
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
 | Create issue for `release/1.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/1.0 feature 1`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/1.0`<br>Click on `Submit new issue` button |
 | Create feature/release_1_0_feature_1 branch from release/1.0 branch for Issue `release/1.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/1 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_1_0_feature_1`<br>Click on `Change branch source` link<br>Branch source = `release/1.0`<br>Click on `Create branch` button |
 | Create issue for `release/1.0 feature 2` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/1.0 feature 2`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/1.0`<br>Click on `Submit new issue` button |
@@ -150,6 +163,19 @@ git push --set-upstream origin bug/release_1_0_bug_1
 | Create release/2.0 milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/2.0`<br>Click on `Create milestone` button |
 | Create release/2.0 branch from release/1.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/2.0`<br>Source = `release/1.0`<br>Click on `Create new branch` button |
 | Change default branch from release/1.0 to release/2.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/2.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Add tag v2.0.0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/2.0
+git tag v2.0.0
+git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
 | Create issue for `release/2.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/2.0 feature 1`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/2.0`<br>Click on `Submit new issue` button |
 | Create feature/release_2_0_feature_1 branch from release/2.0 branch for Issue `release/2.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/6 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_2_0_feature_1`<br>Click on `Change branch source` link<br>Branch source = `release/2.0`<br>Click on `Create branch` button |
 | Make changes to feature/release_2_0_feature_1 branch using following commands | | |
@@ -281,6 +307,19 @@ git push --tags
 | Create release/3.0 milestone | https://github.com/devopscodegen/branching-demo/milestones/new | Title = `release/3.0`<br>Click on `Create milestone` button |
 | Create release/3.0 branch from release/2.0 branch | https://github.com/devopscodegen/branching-demo/branches | Click on New branch button<br>New branch name = `release/3.0`<br>Source = `release/2.0`<br>Click on `Create new branch` button |
 | Change default branch from release/2.0 to release/3.0 | https://github.com/devopscodegen/branching-demo/settings | Section = `Default Branch`<br>Click on `Switch to another branch` icon button<br>Select `release/3.0` in Filter branches dropdown<br>Click on `Update` button<br>Click on `I understand, update the default branch.` button |
+| Add tag v3.0.0 using following commands | | |
+
+```
+rm -rf /tmp/branching-demo
+cd /tmp && git clone https://github.com/devopscodegen/branching-demo.git
+cd branching-demo
+git checkout release/3.0
+git tag v3.0.0
+    git push --tags
+```
+
+| Step | Link | Inputs |
+| --- | --- | --- |
 | Create issue for `release/3.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/new | Add a title = `release/3.0 feature 1`<br>Assignees = `assign yourself`<br>Labels = `feature`<br>Milestone = `release/3.0`<br>Click on `Submit new issue` button |
 | Create feature/release_3_0_feature_1 branch from release/3.0 branch for Issue `release/3.0 feature 1` | https://github.com/devopscodegen/branching-demo/issues/10 | Click on `Create a branch` link in Development section<br>New branch name = `feature/release_3_0_feature_1`<br>Click on `Change branch source` link<br>Branch source = `release/3.0`<br>Click on `Create branch` button |
 | Make changes to feature/release_3_0_feature_1 branch using following commands | | |
