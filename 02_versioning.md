@@ -1,4 +1,11 @@
-# Semantic Versioning
+# Recommendation
+
+It is recommended to use ***3. Release versioning***
+
+Explanation is provided for Semantic versioning, Calendar versioning and Release calendar versioning just to show the differences between them and Release versioning.
+<br><br>
+
+# 1. Semantic versioning
 https://semver.org
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
@@ -12,11 +19,11 @@ PATCH version when you make backward compatible bug fixes
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
 <br><br><br>
 
-# Calendar Versioning
+# 2. Calendar versioning
 https://calver.org
 <br><br><br>
 
-# Release versioning
+# 3. Release versioning ( Recommended )
 ## Versions
 ```
 <MAJOR version>.<MINOR version>.<PATCH version>
@@ -109,8 +116,9 @@ We will have 3 sets of testing environments - current, next and future. Each rel
 - Better approach is to have same deployment frequency and SDLC methodology for all application components. ( If we just do this for related application components and new relation is added in the future, we will have to make this change then which can be problematic so better to do it for all at once ). Difficult to achieve if we have SaaS products who have their own deployment frequency / release cycle.
 <br><br>
 
-## Comparison of Release versioning to Release calendar versioning
+# 4. Release calendar versioning 
 
+## Reason for not recommending
 Release calendar versioning is similar to release versioning except that we can use the version number to identify when the release is planned to goto production.
 
 The planned date may change due to unforeseen circumstances.
@@ -118,9 +126,8 @@ The planned date may change due to unforeseen circumstances.
 Also, we sometimes maintain multiple releases at the same time. For example, Kubernetes has release 27,28,29 and 30 being released at the same time every few weeks. Some customers have deployed Kubernetes release 27 while others have deployed release 30.
 
 So, it is better to just use Release versioning instead of Release calendar versioning and instead map the Release number to Release planned production date in a release management tool.
-<br><br><br>
+<br<br>
 
-# Release calendar versioning ( No need to use. See justification in above paragraph )
 ## Production deployment frequencies ( Release cycles )
 | Frequencies | Version representation |
 | --- | --- |

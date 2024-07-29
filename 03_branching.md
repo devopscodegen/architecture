@@ -1,5 +1,35 @@
 # Branching Design
 
+## Summary
+
+No main branch because we want to manage multiple releases at the same time.
+
+For each release milestone planned to be released to consumers or deployed to production, automatically create release/X.X branch.
+
+For each feature XXX issue, do the following
+- Automatically create feature/XXX branch. 
+- Every time, developers push changes from their local machine git repository feature/XXX branch to the code repository feature/XXX branch, automatically create pull request to merge the changes to the corresponding release/X.X branch.
+
+Every time pull request is merged from source branch to target release/X.X branch, do the following automatically
+- Create version tag vX.X.X
+- Run CI/CD pipeline.
+- Create branch merge/tag_X_X_X_to_release_Y_Y from tag vX.X.X to merge the changes to the next release release/Y.Y branch.
+- Create pull request from merge/tag_X_X_X_to_release_Y_Y branch to the next release release/Y.Y branch.
+
+If CI/CD pipeline fails, then do the following automatically
+- Create bug XXX issue for each bug identified in the CI/CD pipeline like automated testing bug.
+- Create bug/XXX branch from tag vX.X.X
+- Every time, developers push changes from their local machine git repository to the code repository bug/XXX branch, automatically create pull request to merge the changes to the corresponding release/X.X branch.
+
+For each production incident, do the following
+- Create problem XXX issue
+- Automatically create problem/XXX branch. 
+- Every time, developers push changes from their local machine git repository problem/XXX branch to the code repository problem/XXX branch, automatically create pull request to merge the changes to the corresponding release/X.X branch.
+
+For each pull request, do the following
+- Merge the changes from the target release/X.X branch to the source branch using merge commit
+- Run Squash and commit from Github which merges the source branch changes on top of the target release/X.X branch so that previous release/X.X branch commits and tags are left intact in the history of release/X.X branch. 
+
 ## Tutorial
 
 | Step | Link | Inputs |
