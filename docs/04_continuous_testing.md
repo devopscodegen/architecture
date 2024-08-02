@@ -7,14 +7,19 @@
 ### Testing data
 <br>
 
-## Simulated testing
+## Component testing
 ### Features
 - We are running this testing after creating container images, helm charts, etc. so we are testing devops code like container image code, deployment code, database code, etc.
 - We are using actual middleware and simulating the producer/upstream application components using mocks.
 - Automated tests run in the testing namespace for version release.subrelease.patch of the application component which contains all middleware and simulated producer/upstream application components running as containers.
-- In simulated testing, we have tested using simulated producer/upstream application components. 
+- In component testing, we have tested using simulated producer/upstream application components. 
 - In contract testing, we add actual producer/upstream application components to check if our simulated assumptions are correct since contracts and mocks should be same.
 - In end to end testing, we are checking if adding this application component to consumer application components is causing bugs or not.
+### Testing data
+<br>
+
+## Integration testing
+### Features
 ### Testing data
 <br>
 
@@ -29,26 +34,46 @@
             - POST /api/v1/account/2/credit
 - As explained in contract testing section, we can deploy to end to end testing environment, only if contract testing for all consumer contracts of this application component in all producer/upstream application components are successful.
 - Automated tests run in the environment namespace which contains all application components and cloud middleware.
-- Since we are using cloud middleware instead of middleware containers (simulated testing), we are testing infrastucture code as well. 
+- Since we are using cloud middleware instead of middleware containers (component testing), we are testing infrastucture code as well. 
 ### Testing data
 <br>
 
 ## Contract testing
 ### Features
-- Consumer contracts used for contract testing should be same as Producer/Upstream mocks used for simulated testing.
+- Consumer contracts used for contract testing should be same as Producer/Upstream mocks used for component testing.
 - It includes not only validating the request and response fields of api calls but also validation of request and response data.
-- If the request and response fields of api calls or request and response data for simulated testing changes, then need to update the contracts as well.
+- If the request and response fields of api calls or request and response data for component testing changes, then need to update the contracts as well.
 - Ideally, unit test code will change, then mocks will change and then consumer contracts will change.
 - Before deploying the application component to end to end testing environment
-    - We should run contract testing and check if consumer contracts from this application component to all producers/upstream application components are successful. These contracts should be same as the producer/upstream mocks used in simulated testing.
-    - If yes, then only, we should deploy and run the end to end testing. If end to end testing fails, then bug is in the consumer application component since the contract testing is successful and the contracts are same as the producer/upstream mocks used in simulated testing.
-    - If no, then need to wait and keep retrying till the contract testing is successful. Once it is successful, then only we need to deploy and run end to end testing. If end to end testing fails, then bug is in the consumer application component since the contract testing is successful and the contracts are same as the producer/upstream mocks used in simulated testing.
+    - We should run contract testing and check if consumer contracts from this application component to all producers/upstream application components are successful. These contracts should be same as the producer/upstream mocks used in component testing.
+    - If yes, then only, we should deploy and run the end to end testing. If end to end testing fails, then bug is in the consumer application component since the contract testing is successful and the contracts are same as the producer/upstream mocks used in component testing.
+    - If no, then need to wait and keep retrying till the contract testing is successful. Once it is successful, then only we need to deploy and run end to end testing. If end to end testing fails, then bug is in the consumer application component since the contract testing is successful and the contracts are same as the producer/upstream mocks used in component testing.
 - Separate environment is not required for contract testing. It is done in end to end testing environment before deployment.
+### Testing data
+<br>
+
+## Rollback testing
+### Features
+- Database
+- Files
+- Code
+- Producer/Upstream application components
+- Rollback strategy similar to deployment strategy - Gradual/One shot 
+- Need to do before end to end testing so that we can rollback in case of issues.
 ### Testing data
 <br>
 
 ## Performance testing
 ### Features
+### Testing data
+<br>
+
+## Deployment strategy testing
+### Features
+- Blue green
+- Canary
+- Linear
+- Need to do before performance testing which has muliple user clients.
 ### Testing data
 <br>
 
@@ -62,21 +87,10 @@
 ### Testing data
 <br>
 
-## Deployment strategy testing
+## Synthetic testing
 ### Features
-- Blue green
-- Canary
-- Linear
-### Testing data
-<br>
-
-## Rollback testing
-### Features
-- Database
-- Files
-- Code
-- Producer/Upstream application components
-- Rollback strategy similar to deployment strategy - Gradual/One shot 
+- Continuous end to end testing in production
+- Runs every fixed interval like minute, few mins after completion of last testing, etc.
 ### Testing data
 <br>
 

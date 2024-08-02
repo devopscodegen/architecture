@@ -95,8 +95,8 @@ Servers are deployed to data centers, private clouds and public clouds.
 <br><br>
 
 # DevOps
-- Each software application component will have its own source code repository, devops code repository, CI/CD pipeline and artifact repositories.
-- In addition to the above, from devops perspective, we need to create one devops code repository, CI/CD pipeline and artifact repositories for each of the below 
+- Each software application component will have its own source code repository, CI/CD pipeline and artifact repositories.
+- In addition to the above, from devops perspective, we need to create one code repository, CI/CD pipeline and artifact repositories for each of the below 
     - OS and/or middleware combination base images.
     - Common public cloud and private cloud infrastructure code, configuration and secrets of all software application components of each organizational unit.
 <br><br>
@@ -105,7 +105,7 @@ Servers are deployed to data centers, private clouds and public clouds.
 
 ## What is a set/cluster/group/fleet of testing environments ?
 Each set/cluster/group/fleet of testing environments contains the following testing environments
-- One simulated testing environment with separate namespace for each application component.
+- One component testing environment with separate namespace for each application component.
 - One end to end testing environment.
 - One performance testing environment.
 - One relability, chaos engineering and disaster recovery testing environment.
@@ -116,4 +116,6 @@ Each set/cluster/group/fleet of testing environments contains the following test
 Datacenters and public cloud accounts have hard limits on how many resources can be deployed to them. Therefore, we need to divide the deployment of software application components of an organization to multiple production environments. We could have one production environment per software application. This architecture will be more secure but less cost effective. So, it is better to have one production environment per organizational unit. All software application components of the software applications of the organizational unit are deployed to it.
 <br>
 
-## 
+## Why do we need to checkin devops code and testing code in the same code repsitory as the source code ?
+If we checkin them in separate code repositories then they will have different version numbers compared to source code. Plus CI/CD pipeline is trigerred if we merge PR to release branch of source code repository. So if we change devops code or test code we will have to make empty commits to source code repository. We need to add checks in the source code repository on push from local repository to remote repository that developers are not able to change the genai generated devops code. They are supposed to change the testing code but they should not remove actually needed testing code just to pass the tests.
+<br>

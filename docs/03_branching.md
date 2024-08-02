@@ -12,6 +12,7 @@ For each feature XXX issue, do the following
 
 Every time pull request is merged from source branch to target release/X.X branch, do the following automatically
 - Create version tag vX.X.X
+- Change the tag in relevant code files and update the pull request
 - Run CI/CD pipeline.
 - Create branch merge/tag_X_X_X_to_release_Y_Y from tag vX.X.X to merge the changes to the next release release/Y.Y branch.
 - Create pull request from merge/tag_X_X_X_to_release_Y_Y branch to the next release release/Y.Y branch.
