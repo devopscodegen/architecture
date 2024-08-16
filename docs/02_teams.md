@@ -1,4 +1,4 @@
-# TODO : Create example repositories in examplebank organization. Done for infrastructure, network, security and observability. Do for testing, finops and middleware.
+# TODO : Create example repositories in examplebank organization. Done for infrastructure, network, security and observability. Do for testing, finops and middleware. Also do for devops tools like apache maven, hashicorp terraform, etc.
 
 # 1. Application Engineering
 - Add features to application.
