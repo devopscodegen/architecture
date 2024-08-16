@@ -110,6 +110,10 @@ Types of software application component dependencies which need to be developed 
     - Common public cloud and private cloud infrastructure code, configuration and secrets of all software application components of each organizational unit.
 <br><br>
 
+# Platform
+- A platform is a set of tools that are used to serve a common purpose
+- For example : DevOps Platform is a set of tools to implement DevOps practices to improve speed and quality of software delivery from ideation to feedback
+
 # FAQs
 
 ## What is a set/cluster/group/fleet of testing environments ?
