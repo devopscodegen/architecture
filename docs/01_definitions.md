@@ -92,6 +92,15 @@ Middlewares are deployed to Operating Systems.
 Operating Systems are installed on Servers.
 
 Servers are deployed to data centers, private clouds and public clouds.
+
+Types of software application component dependencies which need to be developed as well.
+- Libraries
+- Frameworks
+- Middleware
+- Operating systems
+- Virtual machine base images
+- Container base images
+- Infrastructure as code modules
 <br><br>
 
 # DevOps

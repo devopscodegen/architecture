@@ -13,11 +13,12 @@
     - Code Scanning for bugs, readability, maintainability 
     - Unit
     - Contract
-    - Simulated
+    - Component
     - Integration testing of application component with upstream and downstream systems.
     - End to End testing of all application components deployed to the environment.
     - Performance
-    - Reliability Chaos Engineering
+    - Resilience
+    - Synthetic
     - Security
 - Deploy - core
     - ArgoCD, Helm, Kubernetes
