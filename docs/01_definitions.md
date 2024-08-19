@@ -23,7 +23,7 @@ Organization includes schools, nonprofits, and government customers in addition 
 # Organizational unit
 An organization can be divided into multiple organizational units using combinations of below
 - Divide the organization based on the specialization of its workforce.
-    - For example : divide the organization into departments consisting of marketing, sales, and operations.
+    - For example : divide the organization into departments consisting of marketing, sales, hr, finance and operations.
 - Divide the organization geographically
     - For example : NA (North America), EMEA (Europe, Middle East and Africa), APAC (Australia and Asia Pacific)
 - Divide the organization based on the products, projects, or subsidiaries it operates.
@@ -59,18 +59,21 @@ Multiple types
 - Multiple releases tested in sets/clusters/groups/fleets of testing environments and being supported at the same time. Different releases may be deployed to production environments of different organizational units.
     - Example 1 : Kubernetes has releases 27, 28, 29 and 30 released at the same time. HR organizational unit may be using Kubernetes cluster with release 29 and Marketing organizational unit may have already upgraded to release 30. New developments are happening in release 31 which was released in alpha pre release but currently is in beta pre release. 31 will be released when all kubernetes clusters have upgraded from 27 to 28, 29 or 30.
     - Example 2 : Ubuntu has releases 24.04, 22.04, 20,04, 23.10, 18.04, 16.04 and 14.06 currently supported. Some VMs of HR organizational unit may be using Ubuntu 22.04 while some may still be using Ubuntu 18.04.
+    - Core code is owned by product organization.
+    - Custom code may be owned by customer organization.
 - One release deployed to production and supported. One release being developed and will be deployed to production on next release date.
-- SaaS applications are upgraded automatically by the SaaS team. We need to maintain releases of the configuration and customizations.
+    - Code is owned by customer organization.
+- SaaS applications are upgraded automatically by the SaaS team. We need to maintain releases of the configuration, customizations and integrations with other application components.
 <br><br>
 
 # Types of software application components
 | Type | Description |
 | --- | --- |
-| Web Frontend | React, Angular, SPA, Microfrontend, HTML, CSS, Javascript |
+| Web Frontend | React, Angular, SPA, Microfrontend, HTML, CSS, Javascript, UX Design|
 | Mobile App | Android, iOS |
 | Desktop App | Electron |
 | Backend | Java, Python, Javascript, Spring, Django, Express, NodeJS |
-| Data Ingestion and Transformation | Python, Pyspark, Spark |
+| Data Ingestion and Transformation | Python, Pyspark, Spark, SQL |
 | BI Reports and Dashboards | PowerBI |
 | Embedded / IoT | |
 | Robotics | |
@@ -114,6 +117,9 @@ Types of software application component dependencies which need to be developed 
 - A platform is a set of tools that are used to serve a common purpose
 - For example : DevOps Platform is a set of tools to implement DevOps practices to improve speed and quality of software delivery from ideation to feedback
 
+# IT organisational unit
+- IT employees responsible for all software applications and platforms.
+
 # FAQs
 
 ## What is a set/cluster/group/fleet of testing environments ?
@@ -129,6 +135,6 @@ Each set/cluster/group/fleet of testing environments contains the following test
 Datacenters and public cloud accounts have hard limits on how many resources can be deployed to them. Therefore, we need to divide the deployment of software application components of an organization to multiple production environments. We could have one production environment per software application. This architecture will be more secure but less cost effective. So, it is better to have one production environment per organizational unit. All software application components of the software applications of the organizational unit are deployed to it.
 <br>
 
-## Why do we need to checkin devops code and testing code in the same code repsitory as the source code ?
+## Why do we need to checkin devops code and testing code in the same code repository as the source code ?
 If we checkin them in separate code repositories then they will have different version numbers compared to source code. Plus CI/CD pipeline is trigerred if we merge PR to release branch of source code repository. So if we change devops code or test code we will have to make empty commits to source code repository. We need to add checks in the source code repository on push from local repository to remote repository that developers are not able to change the genai generated devops code. They are supposed to change the testing code but they should not remove actually needed testing code just to pass the tests.
 <br>

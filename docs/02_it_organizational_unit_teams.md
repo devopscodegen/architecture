@@ -1,6 +1,9 @@
 # TODO : Create example repositories in examplebank organization. Done for infrastructure, network, security and observability. Do for testing, finops and middleware. Also do for devops tools like apache maven, hashicorp terraform, etc.
+# mkdocs. material for mkdocs. https://squidfunk.github.io/mkdocs-material/getting-started/
 
-# 1. Application Engineering
+Organization -> IT Organizational Unit -> Teams
+
+# 1. Application Engineering ( a.k.a Development )
 
 Responsibilities:
 - Add features to application.
@@ -23,6 +26,7 @@ From CI/CD pipeline perspective, there are 3 types of applications:
 
 # 2. Application Operations
 - Solve production problems.
+- L1, L2, L3
 <br><br>
 
 # 3. Testing
@@ -42,6 +46,7 @@ From CI/CD pipeline perspective, there are 3 types of applications:
 ## 4.2 Infrastructure
 - Archives, installers, container images and virtual machine images for OS with hardening.
 - Patching
+- Storage
 <br><br>
 
 ### 4.2.1 AWS
@@ -74,14 +79,20 @@ From CI/CD pipeline perspective, there are 3 types of applications:
 - Create and maintain FinOps platform which is a set of tools to implement cost optimization practices.
 <br><br>
 
-## 4.7 Middleware
-- Language, Framework, Compute, Storage, Database, Messaging, Runtime, OS
+## 4.7 Application Middleware
+- Language, Framework, Messaging, Runtime, OS
 - executables, archives, installers, container images and virtual machine images for different operating systems and middlewares for middleware like apache tomcat, jdk, python, etc.
-- Middleware infrastructure like aws eks, aws rds, etc.
+- Middleware infrastructure like aws eks etc.
+<br><br>
+
+## 4.8 Database Middleware
+- Database Middleware
+- Middleware infrastructure like aws rds etc.
 <br><br>
 
 # 5. Organizational change management
-
+- Project Management
+- Release Management
 <br><br>
 
 # 6. Architecture review board
@@ -90,6 +101,13 @@ From CI/CD pipeline perspective, there are 3 types of applications:
 
 # 7. Customer account management
 - In case of applications released as products, liason between customer who has deployed the application or using it as a service and different internal teams.
+
+<br><br>
+
+# 8. Business analyst or Product owner
+- Get requirements from other organizational units of the organization
+- Create feature issues for application engineering team
+
 <br><br>
 
 # Application code repositories for platform tools
