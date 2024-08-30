@@ -1,6 +1,6 @@
-# Semantic versioning
+## Semantic versioning
 
-## Summary
+### Summary
 https://semver.org
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
@@ -14,7 +14,7 @@ PATCH version when you make backward compatible bug fixes
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
 <br/>
 
-## Recommendation
+### Recommendation
 Recommended to use for versioning common libraries or frameworks on which application components are dependant on.
 
 Application components import functions and classes from these libraries or frameworks and call these functions using fixed parameters and return values. 
@@ -34,12 +34,12 @@ Many open source libraries and frameworks use semantic versioning.
 It is better to use contract testing instead of relying on semantic versioning when we make incompatible API changes between  application components like changes to the REST api.
 <br/><br/>
 
-# 2. Calendar versioning
+## 2. Calendar versioning
 
-## Summary
+### Summary
 https://calver.org
 
-## Recommendation
+### Recommendation
 Recommended to use for versioning operating systems and middleware on which application components are deployed to.
 
 These operating systems and middleware have only 1 release per year and have many long-term support (LTS) releases. 
@@ -52,8 +52,8 @@ For example :
 - Thanks to CalVer and elementary arithmetic, any user can easily determine whether their version is still supported. The current LTS release at the time of writing, 16.04, will be supported until April 2021.
 <br/><br/>
 
-# Release versioning ( Recommended for application components )
-## Versions
+## Release versioning ( Recommended for application components )
+### Versions
 ```
 <MAJOR version>.<MINOR version>.<PATCH version>
 [-
@@ -66,7 +66,7 @@ For example :
 ```
 <br/>
 
-## Summary
+### Summary
 Given a version number MAJOR.MINOR.PATCH,:
 
 Increment the MAJOR version by 1 for creating each release.
@@ -82,7 +82,7 @@ Every time, we increment MAJOR version, we reset MINOR and PATCH versions to 0.
 Every time, we increment MINOR version, we keep MAJOR version the same and reset PATCH version to 0.
 <br/>
 
-## Examples
+### Examples
 
 For release 1.0 of the software application component which is planned to be deployed to production on Friday 5th July 2024, 
 - Versions are 1.0.0, 1.0.1, 1.0.2, 1.0.3 and so on. 
@@ -109,22 +109,22 @@ After releases 1.0, 2.0 and release 1.100 are created, if we decide that a new r
 - Any one of these versions will be deployed to production.
 <br/>
 
-## Optional versions
+### Optional versions
 
-### Pre-release version
+- Pre-release version
 ```
     <alpha OR beta OR gamma OR stable>.<pre-release version>
     OR <pre-release MAJOR version>.<pre-release MINOR version>.<pre-release PATCH version>
 ```
-### CI/CD pipeline build number
+- CI/CD pipeline build number
 - Jenkins CI/CD pipeline build number
-### Build timestamp
+- Build timestamp
 - Jenkins CI/CD pipeline build timestamp
 ```date +%Y%m%d%H%M%S```
 - For example : 20240726155537
 <br/>
 
-## Sets of testing environments
+### Sets of testing environments
 We will have 3 sets of testing environments - current, next and future. Each release ```<MAJOR version>.<MINOR version>``` of each application component will be tagged to a particular set of testing environments so that CI/CD pipeline knows to which set of testing environments, it needs to deploy the build artifact. 
 
 | Date | Application component | Deployment frequency | SDLC | Production deployment status | Production deployment date | Version | Testing environment set |
@@ -145,7 +145,7 @@ We will have 3 sets of testing environments - current, next and future. Each rel
 - Better approach is to have same deployment frequency and SDLC methodology for all application components. ( If we just do this for related application components and new relation is added in the future, we will have to make this change then which can be problematic so better to do it for all at once ). Difficult to achieve if we have SaaS products who have their own deployment frequency / release cycle.
 <br/>
 
-## Recommendation
+### Recommendation
 Recommended to use for application components.
 
 Application components do not import the classes and functions of other application components instead they communicate using APIs. So we dont need to use semantic versioning.
@@ -155,9 +155,9 @@ Application components have releases once every day, once every week, once every
 It is better to use release versioning and contract testing instead of relying on semantic versioning when making incompatible API changes between application components like changes to the REST api, event, etc.
 <br/><br/>
 
-# 4. Release calendar versioning 
+## 4. Release calendar versioning 
 
-## Not recommended
+### Not recommended
 Release calendar versioning is similar to release versioning except that we can use the version number to identify when the release is planned to goto production.
 
 The planned date may change due to unforeseen circumstances.
@@ -167,7 +167,7 @@ Also, we sometimes maintain multiple releases at the same time. For example, Kub
 So, it is better to just use Release versioning instead of Release calendar versioning and instead map the Release number to Release planned production date in a release management tool.
 <br/><br/>
 
-## Production deployment frequencies ( Release cycles )
+### Production deployment frequencies ( Release cycles )
 | Frequencies | Version representation |
 | --- | --- |
 | Once a quarter | MAJOR version ```<year in 4 digits><month in 2 digits>``` |
@@ -185,7 +185,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - Since the MAJOR version of both application components is same, we can consider 202408.9. as a mini release of 202408.31.
 <br/>
 
-## Versions
+### Versions
 ```
 <MAJOR version>.<MINOR version>.<PATCH version>
 [-
@@ -197,7 +197,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 ]
 ```
 
-## MAJOR version
+### MAJOR version
 ```<year in 4 digits><month in 2 digits>```
 - Year and month on which it has been planned than CI/CD pipeline will deploy tested build artifact to production. 
 - Example 1 : For a 1 week sprint starting from Monday 29 July 2024 and ending on Friday 2 August 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Friday 2 August 2024, then MAJOR version is 202408
@@ -205,7 +205,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - Example 3 : For a quarterly release starting from Monday 1 July 2024 and ending on Saturday 28 September 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Saturday 28 September 2024, then MAJOR version is 202409
 <br/>
 
-## MINOR version
+### MINOR version
 ```<day in 1 or 2 digits>```
 - Day on which CI/CD pipeline will deploy tested build artifact to production.
 - Example 1 : For a 2 week sprint starting from Monday 29 July 2024 and ending on Friday 2 August 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Friday 2 August 2024, then MINOR version is 2
@@ -213,27 +213,27 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - Example 3 : For a quarterly release starting from Monday 1 July 2024 and ending on Saturday 28 September 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Saturday 28 September 2024, then MINOR version is 28
 <br/>
 
-## PATCH version
+### PATCH version
 - Incremented on every pull request merge to ```release/<MAJOR version>.<MINOR version>``` branch
 <br/>
 
-## Pre-release version [ Optional ]
+### Pre-release version [ Optional ]
 ```
     <alpha OR beta OR gamma OR stable>.<pre-release version>
     OR <pre-release MAJOR version>.<pre-release MINOR version>.<pre-release PATCH version>
 ```
 
-## CI/CD pipeline build number [ Optional ]
+### CI/CD pipeline build number [ Optional ]
 - Jenkins CI/CD pipeline build number
 <br/>
 
-## Build timestamp [ Optional ]
+### Build timestamp [ Optional ]
 - Jenkins CI/CD pipeline build timestamp
 ```date +%Y%m%d%H%M%S```
 - For example : 20240726155537
 <br/>
 
-## Examples
+### Examples
 - 202408.2.1
 - 202408.2.1-alpha.1
 - 202408.2.1-beta.1
@@ -242,7 +242,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - 202408.2.1-alpha.1+5.20240726155537
 <br/>
 
-## Sets of testing environments
+### Sets of testing environments
 We will have 3 sets of testing environments - current, next and future. Each release ```<MAJOR version>.<MINOR version>``` of each application component will be tagged to a particular set of testing environments so that CI/CD pipeline knows to which set of testing environments, it needs to deploy the build artifact. 
 
 | Date | Application component | Deployment frequency | SDLC | Production deployment status | Production deployment date | Version | Testing environment set |

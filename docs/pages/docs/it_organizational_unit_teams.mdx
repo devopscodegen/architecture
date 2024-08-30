@@ -1,6 +1,4 @@
-# Organization -> IT Organizational Unit -> Teams
-
-# 1. Requirement gathering and product roadmap team
+## 1. Requirement gathering and product roadmap team
 - Get requirements from IT (internal) and non IT (external) organizational units of the organization
 - Business Analyst
     - Waterfall
@@ -13,7 +11,7 @@
     - Roadmap
 <br/><br/>
 
-# 2. Organizational change management
+## 2. Organizational change management
 - Project Management
 - Release Management
 - Scrum master
@@ -21,7 +19,7 @@
 - Release manager
 <br/><br/>
 
-# 3. Application Engineering ( a.k.a Development )
+## 3. Application Engineering ( a.k.a Development )
 Responsibilities:
 - Add features to application.
 - Solve non production environment bugs.
@@ -42,12 +40,12 @@ From CI/CD pipeline perspective, there are 3 types of applications:
     - From the perspective of the SaaS organization, output of CI/CD pipeline is a release version, and for each customer onboarded to the SaaS application, separate instance of the application is deployed to production environment.
 <br/><br/>
 
-# 4. Application Operations
+## 4. Application Operations
 - Solve production problems.
 - L1, L2, L3
 <br/><br/>
 
-# 5. Testing
+## 5. Testing
 - Identify bugs by testing in non production environments.
 - Use acceptance criteria to write automated test scripts.
 - Create and maintain testing platform which is a set of tools to perform the testing.
@@ -55,8 +53,8 @@ From CI/CD pipeline perspective, there are 3 types of applications:
 - rollback, component, contract, integration, end to end, progressive delivery, synthetic, performance, resilience
 <br/><br/>
 
-# 6. Platform
-## 6.1 Infrastructure
+## 6. Platform
+### 6.1 Infrastructure
 
 - Hardware and software
 - Data center installation and administration
@@ -106,53 +104,53 @@ From CI/CD pipeline perspective, there are 3 types of applications:
 - Infrastructure as code
 <br/>
 
-## 6.2 Security
+### 6.2 Security
 - Create and maintain Security platform which is a set of tools to implement security practices.
 - Hardware and software security
 - Private cloud
 - Public cloud
 <br/>
 
-## 6.3 DevOps
+### 6.3 DevOps
 - Build, package and deploy application changes to non production and production environments.
 - Create and maintain DevOps platform which is a set of tools to implement DevOps practices to improve speed and quality of software delivery from ideation to feedback.
 - executables, archives, installers, container images and virtual machine images for different operating systems and middlewares for DevOps tools like hashicorp terraform, apache maven, etc.
 - Public cloud infrastructure as code.
 <br/>
 
-## 6.4 Observability
+### 6.4 Observability
 - Create and maintain Observability platform which is a set of tools to get traces, metrics and logs from applications and other tools and generate alerts, insights and dashboards.
 - Example tool is Collector component of OpenTelemetry application of observability organizational unit.
 - executables, archives, installers, container images and virtual machine images for different operating systems and middlewares for observability tools.
 <br/>
 
-## 6.5 FinOps
+### 6.5 FinOps
 - Create and maintain FinOps platform which is a set of tools to implement cost optimization practices.
 <br/>
 
-## 6.6 Application Middleware
+### 6.6 Application Middleware
 - Language, Framework, Messaging, Runtime
 - executables, archives, installers, container images and virtual machine images for different operating systems and middlewares for middleware like apache tomcat, jdk, python, etc.
 - Middleware infrastructure like aws eks etc.
 - Application middleware administration
 <br/>
 
-## 6.7 Database
+### 6.7 Database
 - SQL and NoSQL databases https://db-engines.com/en/ranking
 - Database administration
 - Database infrastructure like aws rds etc.
 <br/><br/>
 
-# 7. Architecture review board
+## 7. Architecture review board
 
 <br/><br/>
 
-# 8. Customer account management
+## 8. Customer account management
 - In case of applications released as products, liason between customer who has deployed the application or using it as a service and different internal teams.
 
 <br/><br/>
 
-# Application code repositories for platform tools
+## Application code repositories for platform tools
 - Discovery : 
     - Fill a questionnaire for each application component to collect the data. Then, use the data to make recommendations for the tools of various platforms. 
     - Use GenAI to scan all the application components code repositories and make recommendations for the tools of various platforms.
