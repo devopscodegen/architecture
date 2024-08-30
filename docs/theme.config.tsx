@@ -36,7 +36,7 @@ const config: DocsThemeConfig = {
   footer: {
     text: (
       <span>
-        Architecture | Built with ❤️ by <a href="/">Sagar Velankar</a>
+        Architecture | Built by <a href="/">Sagar Velankar</a>
       </span>
     ),
   },
