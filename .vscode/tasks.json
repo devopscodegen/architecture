@@ -1,30 +1,28 @@
 {
-	"version": "2.0.0",
-	"tasks": [
+  "tasks": [
     {
-      "type": "npm",
-      "script": "install",
-      "path": "docs",
-      "group": "clean",
-      "problemMatcher": [],
-      "label": "npm: install - docs",
-      "detail": "install dependencies from package"
+      "command": "pnpm dev",
+      "group": {
+        "isDefault": true,
+        "kind": "build"
+      },
+      "label": "Start in development mode",
+      "options": {
+        "cwd": "docs"
+      },
+      "type": "shell"
     },
     {
-      "type": "npm",
-      "script": "dev",
-      "path": "docs",
-      "problemMatcher": [],
-      "label": "npm: dev - docs",
-      "detail": "next dev"
+      "command": "pnpm i",
+      "group": {
+        "kind": "build"
+      },
+      "label": "Install dependencies",
+      "options": {
+        "cwd": "docs"
+      },
+      "type": "shell"
     },
-    {
-      "type": "npm",
-      "script": "start",
-      "path": "docs",
-      "problemMatcher": [],
-      "label": "npm: start - docs",
-      "detail": "next start"
-    }
-  ]
+  ],
+  "version": "2.0.0"
 }
