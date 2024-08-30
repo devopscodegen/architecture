@@ -1,1 +1,1 @@
-docs/pages/README.mdx
+docs/pages/index.mdx
