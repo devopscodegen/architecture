@@ -22,6 +22,11 @@ export default withNextra({
       source: '/',
       destination: '/docs',
       permanent: true
+    },
+    {
+      source: '/architecture',
+      destination: '/architecture/docs',
+      permanent: true
     }
   ]
 })
