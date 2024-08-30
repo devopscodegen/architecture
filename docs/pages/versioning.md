@@ -12,7 +12,7 @@ MINOR version when you add functionality in a backward compatible manner
 PATCH version when you make backward compatible bug fixes
 
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
-<br>
+<br/>
 
 ## Recommendation
 Recommended to use for versioning common libraries or frameworks on which application components are dependant on.
@@ -32,7 +32,7 @@ For example :
 Many open source libraries and frameworks use semantic versioning.
 
 It is better to use contract testing instead of relying on semantic versioning when we make incompatible API changes between  application components like changes to the REST api.
-<br><br>
+<br/><br/>
 
 # 2. Calendar versioning
 
@@ -50,7 +50,7 @@ For example :
 - Ubuntu derives additional benefit from its CalVer scheme, by integrating it with their support schedule. 
 - Ubuntu currently has five-year support periods for their long-term support (LTS) releases, and only 9 months for non-LTS releases. 
 - Thanks to CalVer and elementary arithmetic, any user can easily determine whether their version is still supported. The current LTS release at the time of writing, 16.04, will be supported until April 2021.
-<br><br>
+<br/><br/>
 
 # Release versioning ( Recommended for application components )
 ## Versions
@@ -64,7 +64,7 @@ For example :
     <CI/CD pipeline build number>.<CI/CD pipeline build timestamp>
 ]
 ```
-<br>
+<br/>
 
 ## Summary
 Given a version number MAJOR.MINOR.PATCH,:
@@ -80,7 +80,7 @@ CI/CD pipeline runs once for each version number MAJOR.MINOR.PATCH
 Every time, we increment MAJOR version, we reset MINOR and PATCH versions to 0.
 
 Every time, we increment MINOR version, we keep MAJOR version the same and reset PATCH version to 0.
-<br>
+<br/>
 
 ## Examples
 
@@ -107,7 +107,7 @@ After releases 1.0, 2.0 and release 1.100 are created, if we decide that a new r
 - Reset the PATCH version to 0
 - Therefore, versions are 1.50.0, 1.50.1, 1.50.2, 1.50.3 and so on. 
 - Any one of these versions will be deployed to production.
-<br>
+<br/>
 
 ## Optional versions
 
@@ -122,7 +122,7 @@ After releases 1.0, 2.0 and release 1.100 are created, if we decide that a new r
 - Jenkins CI/CD pipeline build timestamp
 ```date +%Y%m%d%H%M%S```
 - For example : 20240726155537
-<br>
+<br/>
 
 ## Sets of testing environments
 We will have 3 sets of testing environments - current, next and future. Each release ```<MAJOR version>.<MINOR version>``` of each application component will be tagged to a particular set of testing environments so that CI/CD pipeline knows to which set of testing environments, it needs to deploy the build artifact. 
@@ -136,14 +136,14 @@ We will have 3 sets of testing environments - current, next and future. Each rel
 | Tuesday 13 August 2024 | #2 | Once every 2 weeks | Agile | Planned | Friday 16 August 2024 | 2.0 | Next |
 | Tuesday 13 August 2024 | #2 | Once every 2 weeks | Agile | Planned | Friday 23 August 2024 | 3.0 | Future |
 
-<br>On Tuesday 13 August 2024, If we need to make a change in both application components, then we can test it in Next set of testing environments. 
+<br/>On Tuesday 13 August 2024, If we need to make a change in both application components, then we can test it in Next set of testing environments. 
 - In that case, we need to make the change in 1.0 of #1 and 2.0 of #2. But release 2.0 of #2 will go to production on 16 August and release 1.0 of #1 will go to production on 31 August. 
 - So if our change in #2 requires the change in #1, then there is a problem. 
 - In this case, we need to use feature toggles to make the change in 2.0 of #2 and 1.0 of #1 and test it but keep the feature toggle disabled. 
 - We need to enable the feature toggle in both 1.0 of #1 and 2.0 of #2 using hotfix after 31st August after 1.0 of #1 goes into production and both are pointing to the current set of testing environment. 
 - When enabling the feature toggle, we need to test it in current set of testing environments.
 - Better approach is to have same deployment frequency and SDLC methodology for all application components. ( If we just do this for related application components and new relation is added in the future, we will have to make this change then which can be problematic so better to do it for all at once ). Difficult to achieve if we have SaaS products who have their own deployment frequency / release cycle.
-<br>
+<br/>
 
 ## Recommendation
 Recommended to use for application components.
@@ -153,7 +153,7 @@ Application components do not import the classes and functions of other applicat
 Application components have releases once every day, once every week, once every 2 weeks, once every 3 weeks, once every month or once every quarter. They dont have one release per year and long term support releases. So we dont need to use calendar versioning.
 
 It is better to use release versioning and contract testing instead of relying on semantic versioning when making incompatible API changes between application components like changes to the REST api, event, etc.
-<br><br>
+<br/><br/>
 
 # 4. Release calendar versioning 
 
@@ -165,7 +165,7 @@ The planned date may change due to unforeseen circumstances.
 Also, we sometimes maintain multiple releases at the same time. For example, Kubernetes has release 27,28,29 and 30 being released at the same time every few weeks. Some customers have deployed Kubernetes release 27 while others have deployed release 30.
 
 So, it is better to just use Release versioning instead of Release calendar versioning and instead map the Release number to Release planned production date in a release management tool.
-<br<br>
+<br/><br/>
 
 ## Production deployment frequencies ( Release cycles )
 | Frequencies | Version representation |
@@ -183,7 +183,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - If application component #1 uses waterfall sdlc and is deployed to production once a month and its next production deployment is planned on Saturday 31 August 2024, then all versions of the tested build artifact will start with 202408.31.
 - If application component #2 uses agile sdlc and is deployed to production once every 2 weeks and its next production deployment is planned on Friday 9 August 2024, then all versions of the tested build artifact will start with 202408.9.
 - Since the MAJOR version of both application components is same, we can consider 202408.9. as a mini release of 202408.31.
-<br>
+<br/>
 
 ## Versions
 ```
@@ -203,7 +203,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - Example 1 : For a 1 week sprint starting from Monday 29 July 2024 and ending on Friday 2 August 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Friday 2 August 2024, then MAJOR version is 202408
 - Example 2 : For a 2 week sprint starting from Monday 29 July 2024 and ending on Friday 9 August 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Friday 9 August 2024, then MAJOR version is 202408
 - Example 3 : For a quarterly release starting from Monday 1 July 2024 and ending on Saturday 28 September 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Saturday 28 September 2024, then MAJOR version is 202409
-<br>
+<br/>
 
 ## MINOR version
 ```<day in 1 or 2 digits>```
@@ -211,11 +211,11 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - Example 1 : For a 2 week sprint starting from Monday 29 July 2024 and ending on Friday 2 August 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Friday 2 August 2024, then MINOR version is 2
 - Example 2 : For a 2 week sprint starting from Monday 29 July 2024 and ending on Friday 9 August 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Friday 9 August 2024, then MINOR version is 9
 - Example 3 : For a quarterly release starting from Monday 1 July 2024 and ending on Saturday 28 September 2024, if it has been planned that CI/CD pipeline will deploy tested build artifact to production on Saturday 28 September 2024, then MINOR version is 28
-<br>
+<br/>
 
 ## PATCH version
 - Incremented on every pull request merge to ```release/<MAJOR version>.<MINOR version>``` branch
-<br>
+<br/>
 
 ## Pre-release version [ Optional ]
 ```
@@ -225,13 +225,13 @@ So, it is better to just use Release versioning instead of Release calendar vers
 
 ## CI/CD pipeline build number [ Optional ]
 - Jenkins CI/CD pipeline build number
-<br>
+<br/>
 
 ## Build timestamp [ Optional ]
 - Jenkins CI/CD pipeline build timestamp
 ```date +%Y%m%d%H%M%S```
 - For example : 20240726155537
-<br>
+<br/>
 
 ## Examples
 - 202408.2.1
@@ -240,7 +240,7 @@ So, it is better to just use Release versioning instead of Release calendar vers
 - 202408.2.1-0.0.5
 - 202408.2.1+5.20240726155537
 - 202408.2.1-alpha.1+5.20240726155537
-<br>
+<br/>
 
 ## Sets of testing environments
 We will have 3 sets of testing environments - current, next and future. Each release ```<MAJOR version>.<MINOR version>``` of each application component will be tagged to a particular set of testing environments so that CI/CD pipeline knows to which set of testing environments, it needs to deploy the build artifact. 
@@ -254,7 +254,7 @@ We will have 3 sets of testing environments - current, next and future. Each rel
 | Tuesday 13 August 2024 | #2 | Once every 2 weeks | Agile | Planned | Friday 16 August 2024 | 202408.16 | Next |
 | Tuesday 13 August 2024 | #2 | Once every 2 weeks | Agile | Planned | Friday 23 August 2024 | 202408.23 | Future |
 
-<br>On Tuesday 13 August 2024, If we need to make a change in both application components, then we can test it in Next set of testing environments. 
+<br/>On Tuesday 13 August 2024, If we need to make a change in both application components, then we can test it in Next set of testing environments. 
 - In that case, we need to make the change in 202408.31 of #1 and 202408.16 of #2. But #2 will go to production on 16 August and #1 will goto production on 31 August. 
 - So if our change in #2 requires the change in #1, there is a problem. 
 - In this case, we need to use feature toggles to make the change in 202408.16 of #2 and 202408.31 of #1 and test it but keep the feature toggle disabled. 

@@ -7,18 +7,18 @@ In a conglomerate, one company owns a controlling stake in smaller companies tha
 Conglomerates can be created in several ways, including mergers or acquisitions.
 
 The parent company can cut back the risks of being in a single market by becoming a conglomerate diversified across several industry sectors.
-<br><br>
+<br/><br/>
 
 # Company
 
 A company is a legal entity formed by a group of individuals to engage in and operate a business enterprise in a commercial or industrial capacity.
 
 A Conglomerate contains many companies.
-<br><br>
+<br/><br/>
 
 # Organization
 Organization includes schools, nonprofits, and government customers in addition to companies and conglomerates.
-<br><br>
+<br/><br/>
 
 # Organizational unit
 An organization can be divided into multiple organizational units using combinations of below
@@ -36,7 +36,7 @@ Another example is APAC broadband internet.
 As you can see, we have divided the organization using multiple criteria to create organizational units.
 
 Every organization decides the criteria and how to divide the organization into organizational units.
-<br><br>
+<br/><br/>
 
 # Software application
 
@@ -45,7 +45,7 @@ Manual work done by employees of each organizational unit has been migrated to s
 These software applications belonging to one organizational unit are deployed to the same production environment and use one set/cluster/group/fleet of testing environments per release.
 
 One set/cluster/group/fleet of testing environments is used for Release 1 which is currently in production and another set/cluster/group/fleet of testing environments is used for Release 2 which is being currently developed and so on.
-<br><br>
+<br/><br/>
 
 # Software Application Component
 
@@ -64,7 +64,7 @@ Multiple types
 - One release deployed to production and supported. One release being developed and will be deployed to production on next release date.
     - Code is owned by customer organization.
 - SaaS applications are upgraded automatically by the SaaS team. We need to maintain releases of the configuration, customizations and integrations with other application components.
-<br><br>
+<br/><br/>
 
 # Types of software application components
 | Type | Description |
@@ -83,7 +83,7 @@ Multiple types
 | Integration | Mulesoft |
 | BPM | Bizagi |
 | Automation Scripts | InfraOps, CloudOps, NetOps - Python, Shell scripting | 
-<br><br>
+<br/><br/>
 
 # Software application components dependencies
 Software application components import functions and classes from Libraries / Frameworks and call them using defined parameters and return values.
@@ -104,14 +104,14 @@ Types of software application component dependencies which need to be developed 
 - Virtual machine base images
 - Container base images
 - Infrastructure as code modules
-<br><br>
+<br/><br/>
 
 # DevOps
 - Each software application component will have its own source code repository, CI/CD pipeline and artifact repositories.
 - In addition to the above, from devops perspective, we need to create one code repository, CI/CD pipeline and artifact repositories for each of the below 
     - OS and/or middleware combination base images.
     - Common public cloud and private cloud infrastructure code, configuration and secrets of all software application components of each organizational unit.
-<br><br>
+<br/><br/>
 
 # Platform
 - A platform is a set of tools that are used to serve a common purpose
@@ -129,12 +129,12 @@ Each set/cluster/group/fleet of testing environments contains the following test
 - One performance testing environment.
 - One relability, chaos engineering and disaster recovery testing environment.
 - One deployment strategy and rollback testing environment.
-<br>
+<br/>
 
 ## Why cannot we deploy all software application components of an organization to the same production environment ?
 Datacenters and public cloud accounts have hard limits on how many resources can be deployed to them. Therefore, we need to divide the deployment of software application components of an organization to multiple production environments. We could have one production environment per software application. This architecture will be more secure but less cost effective. So, it is better to have one production environment per organizational unit. All software application components of the software applications of the organizational unit are deployed to it.
-<br>
+<br/>
 
 ## Why do we need to checkin devops code and testing code in the same code repository as the source code ?
 If we checkin them in separate code repositories then they will have different version numbers compared to source code. Plus CI/CD pipeline is trigerred if we merge PR to release branch of source code repository. So if we change devops code or test code we will have to make empty commits to source code repository. We need to add checks in the source code repository on push from local repository to remote repository that developers are not able to change the genai generated devops code. They are supposed to change the testing code but they should not remove actually needed testing code just to pass the tests.
-<br>
+<br/>
