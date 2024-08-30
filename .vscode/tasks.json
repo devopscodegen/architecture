@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "type": "npm",
+            "script": "install",
+            "path": "docs",
+            "group": "clean",
+            "problemMatcher": [],
+            "label": "npm: install - docs",
+            "detail": "install dependencies from package"
+        },
+        {
+            "type": "npm",
+            "script": "dev",
+            "path": "docs",
+            "problemMatcher": [],
+            "label": "npm: dev - docs",
+            "detail": "next dev"
+        }
+    ]
+}
