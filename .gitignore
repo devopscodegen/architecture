@@ -35,3 +35,4 @@ custom-elements.json
 /src/annotative/constants/*.json
 
 /docs/.next
+/docs/out
