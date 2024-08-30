@@ -34,7 +34,7 @@ Many open source libraries and frameworks use semantic versioning.
 It is better to use contract testing instead of relying on semantic versioning when we make incompatible API changes between  application components like changes to the REST api.
 <br/><br/>
 
-## 2. Calendar versioning
+## Calendar versioning
 
 ### Summary
 https://calver.org
@@ -155,7 +155,7 @@ Application components have releases once every day, once every week, once every
 It is better to use release versioning and contract testing instead of relying on semantic versioning when making incompatible API changes between application components like changes to the REST api, event, etc.
 <br/><br/>
 
-## 4. Release calendar versioning 
+## Release calendar versioning 
 
 ### Not recommended
 Release calendar versioning is similar to release versioning except that we can use the version number to identify when the release is planned to goto production.
