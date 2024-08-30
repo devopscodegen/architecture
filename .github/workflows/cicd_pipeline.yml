@@ -1,4 +1,4 @@
-name: Deploy Nextra documentation site to Github Pages
+name: CI/CD pipeline
 
 on:
   # Runs on pushes targeting the default branch
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   # Build job
-  build:
+  build-documentation:
     runs-on: ubuntu-latest
     steps:
 
@@ -68,7 +68,7 @@ jobs:
           path: ./docs/out
 
   # Deployment job
-  deploy:
+  deploy-documentation:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

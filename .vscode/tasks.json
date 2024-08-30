@@ -6,7 +6,7 @@
         "isDefault": true,
         "kind": "build"
       },
-      "label": "Start in development mode",
+      "label": "Start documentation website in development mode",
       "options": {
         "cwd": "docs"
       },
@@ -17,7 +17,7 @@
       "group": {
         "kind": "build"
       },
-      "label": "Install dependencies",
+      "label": "Install dependencies for documentation website",
       "options": {
         "cwd": "docs"
       },
