@@ -1,0 +1,52 @@
+import { Steps } from 'nextra/components'
+
+## DevOps steps
+- Infrastructure as code tools
+  - Terraform
+  - Ansible
+  - REST API
+  - Jenkins Configuration as Code (a.k.a. JCasC) Plugin
+
+<Steps>
+
+### Identify code repository application
+- github
+
+### Identify CI/CD pipeline application
+- jenkins
+
+### CI/CD pipeline application infrastructure component
+- Code repository
+  - Create devops-jenkins-infrastructure code repository
+  - This will use shell script or github actions to create Jenkins executables, archives, installers, container images, helm charts and virtual machine images for different operating systems and middlewares. It will install required plugins like configuration as code plugin as part of the image.
+  - This will use shell script or github actions to create Jenkins infrastructure and configure it using configuration as code
+- CI/CD pipeline
+  - It will also create devops-jenkins-infrastructure CI/CD pipeline
+
+### Code repository application infrastructure component
+- Code repository
+  - Create devops-github-infrastructure code repository
+- CI/CD pipeline
+  - Update devops-jenkins-infrastructure code repository to create devops-github-infrastructure CI/CD pipeline
+
+### Identify ITSM with ITAM/CMDB/Component catalog application
+- Jira service management (jsm) with Atlassian compass (component catalog)
+- ITSM is has all features of helpdesk and servicedesk and more features so organizational unit for the application is itsm.
+  - https://www.atlassian.com/itsm/service-request-management/help-desk-vs-service-desk-vs-itsm
+- Atlassian compass
+  - https://developer.atlassian.com/cloud/compass/overview/what-is-compass/
+- Affected services in Jira service management are synced with Atlassian compass components
+  - https://support.atlassian.com/jira-service-management-cloud/docs/synchronize-your-services-with-compass/
+
+### ITAM/CMDB/Component catalog application infrastructure component
+- Code repository
+  - Update devops-github-infrastructure code repository to create itsm-compass-infrastructure code repository
+- CI/CD pipeline
+  - Update devops-jenkins-infrastructure code repository to create itsm-compass-infrastructure CI/CD pipeline
+- add custom fields like organizational unit and application to compass settings -> custom fields.
+
+### Components code repository and CI/CD pipeline
+- For each component added to Atlassian compass, devops-github-infrastructure and devops-jenkins-infrastructure CI/CD pipelines should create corresponding code repository and CI/CD pipeline.
+- Events or webhooks
+
+</Steps>
