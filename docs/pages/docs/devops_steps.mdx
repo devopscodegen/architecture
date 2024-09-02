@@ -69,7 +69,7 @@ import { Steps } from 'nextra/components'
 ### Configuration
 - Configuration should be stored in devops/configuration of examplebank organization, devops organizational unit, jenkins and other components.
 - CI/CD pipeline should package these and push to artifact repository
-- CI/CD pipeline should deploy these configurations to configuration management component like Hashicorp Consul during the deployment to respective environment.
+- CI/CD pipeline should deploy these configurations to configuration management component like Hashicorp Vault during the deployment to respective environment.
 - When the application starts, it should download this configuration according to authentication and authorization setup by CI/CD pipeline and merge the configuration with component configuration overwriting the organizational unit configuration which overwrites the organization configuration. 
 - Yaml files should be used to store the configuration due to requirements for dictionary and array data structures.
 
@@ -92,6 +92,10 @@ import { Steps } from 'nextra/components'
 
 ### artifact repository component code repository
 - create devops-nexusrm component code repository
+
+### configuration management and secrets management component code repository
+- create security-vault component code repository.
+- need to first create security organizational unit code repository and CI/CD pipeline.
 
 ### Rancher desktop
 - Install rancher desktop on laptop with containerd container enginer instead of docker container engine.
