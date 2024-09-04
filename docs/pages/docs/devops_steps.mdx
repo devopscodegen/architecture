@@ -12,6 +12,54 @@ import { Steps } from 'nextra/components'
 
 <Steps>
 
+### Equinix Colocation
+- Install bare metal servers in equinix colocation
+- IBX
+- https://www.equinix.com/products/data-center-services/colocation
+- https://docs.equinix.com/en-us/Content/Colocation-Products/colo-intro.htm
+
+### Equinix fabric
+- Use Equinix fabric for communication between your bare metal servers in equinix colocation and aws, azure, google and other clouds.
+- https://www.equinix.com/products/digital-infrastructure-services/equinix-fabric
+- https://docs.equinix.com/en-us/Content/Interconnection/Fabric/Fabric-landing-main.htm
+- https://www.equinix.com/products/digital-infrastructure-services/equinix-fabric/provider-availability
+
+### DevOps components reliability
+- DevOps components like Cloudbees Jenkins will be initially installed in VMs or containers on the bare metal server in the Equinix colocation data center.
+- Once they are used to create AWS, Azure and Google cloud infrastructure, they will be made highly available with Passive or Active strategies in these clouds. 
+- For example, Jenkins in AWS needs to handle CI/CD pipelines which build and deploy components to AWS infrastructure. Jenkins in Azure needs to handle CI/CD pipelines which build and deploy components to Azure infrastructure.
+
+### GitOps for CD
+- Harness, Spinnaker for CI/CD and Morpheus Data, Cloudify for cloud management are hype. They dont have proper open source support
+- Use Cloudbees Jenkins for CI, ArgoCD for Kubernetes CD and Hashicorp cloud platform Terraform, Vault, etc. for Infrastructure CD.
+- All Kubernetes (Helm charts) and Infrastructure code along with environment configuration code will be checked into the code repository.
+- It is responsibility of Jenkins to compile it and translate it into files which can be checked into the GitOps repository used by components like ArgoCD, Terraform, etc. using commands like helm template, terraform plan. Translated files should contain all the environment configuration variables part of the files.
+  - Helm template -> Kubernetes yaml
+  - Terraform tf -> Terraform plan. Use read only access to account for drift detection and plan generation.
+  - Need to test if this is possible. Liquibase files -> sql. Use read only access to database for drift detection and sql generation.
+- GitOps (PullOps vs PushOps)
+  - The difference between Helm and Argo is the difference between Ansible and Puppet. Ansible applies the playbook when you tell it to run, and never actually does anything to ensure that state is conformed to until you run the playbook again. Puppet applies the manifest you define and perpetually ensures that state is applied until the end of time and automatically, immediately, corrects any changes that deviates from the manifest. Puppet is stateful enforcement. Ansible is setting a state but not enforcing it. Ansible is good. Puppet is great but is actually resilient and self-correcting.
+    - https://www.reddit.com/r/kubernetes/comments/1dpoqk2/comment/lajjerb/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+  - Think of helm as push-ops and Argo as pull-ops. With push-ops, you often won't find out about any drift until the next time you try to push the latest state of the IaC repository. Sometimes that drift is important and can mean a lot of work for your team. With pull-ops, you can learn of any drift immediately as it occurs. Your argo app can be configured to automatically try to reconcile any drift back to the IaC state, or it can be configured to wait until manual intervention. It's up to you. The point is that you have the knowledge and the choice now.
+    - https://www.reddit.com/r/kubernetes/comments/1dpoqk2/comment/laonpmj/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+- Deployment components like argocd, terraform, sql runner should run in the same account or kubernetes cluster or namespace where the infrastructure needs to be deployed and run when Jenkins updates the GitOps repository relevant branch. We can have one branch per component environment. Only Jenkins should have permission to update this GitOps repository.
+- Terraform provider can be used to install argocd operator and create argocd applications in the kubernetes cluster and namespace.
+- GitOps is more secure because Jenkins is not given access to do any deployment to any account. We can have single Jenkins for non production and production environments. It only has access to update GitOps repository.
+- Also, we dont need to add code in Jenkins to run commands like helm install, terraform apply, liquibase deploy, etc.
+- ArgoCD runs in the same namespace where kubernetes infrastructure needs to be deployed.
+- We need to run terraform binary in the same account where we need to deploy the cloud infrastructure.
+- Need to test if this is possible. Liquibase binary is not required since we need to just run sql statements. Use read only access to database for drift detection and sql generation. 
+- We have separate accounts, clusters and namespaces for different environments of an organizational unit or component.
+- We can use the GitOps repository for Static code analysis, FinOps and architecture visualization.
+- ArgoCD, Terraform and SQL should also do periodic drift detection. GitOps repository should exactly match the infrastructure in account, cluster, namespace or database.
+- Need to test if this is possible. Jenkins may still need to connect to infrastructure to install middleware, configure it and deploy application changes to it. Ansible could be used with GitOps to achieve this. One can use ansible-pull and cron to continuously sync a git repo then with the --only-if-changed/-o flag, execute the changes locally, including the --check works as expected to do a dry-run. 
+  - https://docs.ansible.com/ansible/latest/cli/ansible-pull.html
+  - This should be on each VM which needs to be managed by ansible.
+- AWS batch with fargate can be used to run the terraform binary which performs the apply and updates the state. It can also be a small EC2 instance with state backed up after each run. Appropriate IAM permissions can be assigned to the AWS EC2 or fargate similar to cloudformation iam permissions. State needs to be stored in the same account so that if account is deleted, state is also deleted.
+- Liquibase binary daemon can be a process on the database machine.
+- binary daemon process should be as close to the deployment endpoint as possible and traffic should not go over the internet. It should be in the same VPC or same cloud.
+- If one reconcilation takes time, any more updates to the GitOps repository will have to wait for the previous reconcilation to finish.
+
 ### Google account
 - Create account in google with examplebank2024@gmail.com email address.
 
@@ -30,14 +78,32 @@ import { Steps } from 'nextra/components'
 - Create AWS IAM user with name administrator and permissions AdministratorAccess.
 - Add MFA to administrator user.
 
-### Code repository template
-- Create Github repository template with following features.
+### devops-github code repository
+- Use it to create Github repository template with following features.
   - devops, docs and tests directories. ( No need for .github/workflows/docs since docs will be deployed by the CI/CD pipeline in different environments ).
   - release/1.0 branch.
   - devops/configuration folder will have configuration files for component, integrated, e2e, performance, production and dr environments.
 
+### CI/CD pipeline
+- Create Github repository devops-jenkins in examplebank organization from the Github repository template.
+- It will use packer to create Jenkins virtual machine image.
+- It should install all plugins and configure using configuration as code.
+- It will create Jenkins virtual machine on Data center (macos virtualization).
+
+### Component catalog
+- Create Github repository devops-compass in examplebank organization from the Github repository template.
+- devops-github, devops-jenkins and devops-compass components should be created. github repositories for them were created manually. jenkins jobs for them should be created.
+- Compass should automatically create github repository and jenkins job for each component created in compass.
+
+### Cloud management platform
+- Hashicorp cloud platform for Terraform, Vault, etc.
+- Create component devops-hcp in compass.
+- Jenkins CI/CD pipelines will use cloudify cli with terraform module blueprints to deploy infrastructure as code to private clouds, public clouds and kubernetes.
+- It will use packer to create Cloudify virtual machine image.
+- It will create Cloudify virtual machine on Data center (macos virtualization).
+
 ### Organization code repository
-- Create Github repository examplebank in examplebank organization from the Github repository template.
+- Create component examplebank in compass.
 - Create terraform module in devops/infrastructure folder to 
   - create AWS organization with name examplebank.
   - enable AWS identity center.
@@ -51,7 +117,7 @@ import { Steps } from 'nextra/components'
 - Temporary shell script will be replaced by Jenkins CI/CD pipeline when Jenkins component is installed in devops organizational unit.
 
 ### devops organizational unit code repository
-- Create Github repository devops in examplebank organization from the Github repository template.
+- Create component devops in compass.
 - Create terraform module in devops/infrastructure folder to 
   - create AWS organizational unit with name devops in AWS organization examplebank.
   - create AWS organization accounts for component, integrated, e2e, performance, production and dr environments of devops organizational unit.
@@ -84,22 +150,12 @@ import { Steps } from 'nextra/components'
 ### Code repository component code repository
 - create devops-github component code repository
 
-### CI/CD pipeline component code repository
-- create devops-jenkins component code repository
-
-### component catalog component code repository
-- create devops-compass component code repository
-
 ### artifact repository component code repository
 - create devops-nexusrm component code repository
 
 ### configuration management and secrets management component code repository
 - create security-vault component code repository.
 - need to first create security organizational unit code repository and CI/CD pipeline.
-
-### Rancher desktop
-- Install rancher desktop on laptop with containerd container enginer instead of docker container engine.
-- https://rancherdesktop.io/
 
 ### Identify code repository application
 - github
