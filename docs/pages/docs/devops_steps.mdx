@@ -12,6 +12,24 @@ import { Steps } from 'nextra/components'
 
 <Steps>
 
+### DAPR
+
+https://docs.dapr.io
+
+| Building Block | Description |
+|----------------|-------------|
+| **Service-to-service invocation**  | Resilient service-to-service invocation enables method calls, including retries, on remote services, wherever they are located in the supported hosting environment.
+| **Publish and subscribe** | Publishing events and subscribing to topics between services enables event-driven architectures to simplify horizontal scalability and make them resilient to failure. Dapr provides at-least-once message delivery guarantee, message TTL, consumer groups and other advance features.
+| **Workflows** | The workflow API can be combined with other Dapr building blocks to define long running, persistent processes or data flows that span multiple microservices using Dapr workflows or workflow components. 
+| **State management** | With state management for storing and querying key/value pairs, long-running, highly available, stateful services can be easily written alongside stateless services in your application. The state store is pluggable and examples include AWS DynamoDB, Azure Cosmos DB, Azure SQL Server, GCP Firebase, PostgreSQL or Redis, among others.
+| **Resource bindings** | Resource bindings with triggers builds further on event-driven architectures for scale and resiliency by receiving and sending events to and from any external source such as databases, queues, file systems, etc.
+| **Actors** | A pattern for stateful and stateless objects that makes concurrency simple, with method and state encapsulation. Dapr provides many capabilities in its actor runtime, including concurrency, state, and life-cycle management for actor activation/deactivation, and timers and reminders to wake up actors.
+| **Secrets** | The secrets management API integrates with public cloud and local secret stores to retrieve the secrets for use in application code.
+| **Configuration**  | The configuration API enables you to retrieve and subscribe to application configuration items from configuration stores. 
+| **Distributed lock**  | The distributed lock API enables your application to acquire a lock for any resource that gives it exclusive access until either the lock is released by the application, or a lease timeout occurs. 
+| **Cryptography** | The cryptography API provides an abstraction layer on top of security infrastructure such as key vaults. It contains APIs that allow you to perform cryptographic operations, such as encrypting and decrypting messages, without exposing keys to your applications.
+| **Jobs** | The jobs API enables you to schedule jobs at specific times or intervals.
+
 ### Equinix Colocation
 - Install bare metal servers in equinix colocation
 - IBX
@@ -59,6 +77,142 @@ import { Steps } from 'nextra/components'
 - Liquibase binary daemon can be a process on the database machine.
 - binary daemon process should be as close to the deployment endpoint as possible and traffic should not go over the internet. It should be in the same VPC or same cloud.
 - If one reconcilation takes time, any more updates to the GitOps repository will have to wait for the previous reconcilation to finish.
+- Every reconcilation will fix the drift if one exists due to manual changes.
+- Wait for reconcilation to finish before Jenkins updates the GitOps repository because contract testing results for to be deployed component may change after reconcilation of a component.
+- GitOps features
+  * Automated deployment of applications to specified target environments
+  * Support for multiple config management/templating tools (Kustomize, Helm, Jsonnet, plain-YAML)
+  * Ability to manage and deploy to multiple clusters
+  * SSO Integration (OIDC, OAuth2, LDAP, SAML 2.0, GitHub, GitLab, Microsoft, LinkedIn)
+  * Multi-tenancy and RBAC policies for authorization
+  * Rollback/Roll-anywhere to any application configuration committed in Git repository
+  * Health status analysis of application resources
+  * Automated configuration drift detection and visualization
+  * Automated or manual syncing of applications to its desired state
+  * Web UI which provides real-time view of application activity
+  * CLI for automation and CI integration
+  * Webhook integration (GitHub, BitBucket, GitLab)
+  * Access tokens for automation
+  * PreSync, Sync, PostSync hooks to support complex application rollouts (e.g.blue/green & canary upgrades)
+  * Audit trails for application events and API calls
+  * Prometheus metrics
+  * Parameter overrides for overriding helm parameters in Git
+- Better to use Helm template -> Kubernetes yaml since Helm version change may make some changes to the Kubernetes yaml. We are tracking helm charts in source code repository. We can track what changes helm made in kubernetes yaml in GitOps repository. How will Helm hooks work ? Should we use argocd hooks ?
+- ArgoCD application 
+  - GitOps repository : one per organizational unit
+  - Target revision :
+    - HEAD
+    - branch : one branch per environment like component, integrated, e2e, performance, production and dr of the organizational unit
+    - tag
+  - Path : one per component which has source code repository
+  - Destination : one per kubernetes cluster of each environment account of organizational unit
+  - Namespace : one per environment of the organizational unit if multiple environments share the same kubernetes cluster. 
+    - We can have 4 accounts : 
+      - component, integrated and e2e combined into one : any change in kubernetes cluster will affect all 3 environments
+      - performance
+      - production
+      - dr 
+    - OR we can have 6 accounts and 6 kubernetes clusters.
+- GitOps should also be used to managed DevOps Resources
+  - When new component is added, compass should add the new component terraform infrastructure code in GitOps repository of each organizational unit where required.
+  - Terraform running in each account like DevOps account, environment account should keep the DevOps infrastructure as code in sync with the GitOps repository. 
+  - So if tomorrow, we need to make some changes to all the DevOps resources, it can be done by just updating the GitOps repository. 
+  - Examples of DevOps resources are CI/CD pipelines, artifact repositories, source code repositories, sonarqube projects, argocd applications, etc.
+- CD should merge all the configuration values and create terraform.tfvars.json and download all required terraform modules and create terraform module files for each environment account for each component.
+- Use opentofu instead of terraform
+- Use https://flux-iac.github.io/tofu-controller/use-tf-controller/ with fluxcd GitOps
+- Steps
+  - Create management account
+  - Use terraform to create vpc and ec2 instance in management account. This infrastructure code will be added later to examplebank gitops repository.
+  - ec2 instance should have all the terraform code to bootstrap the management account like  
+    - create organization examplebank. This infrastructure code will be added later to examplebank gitops repository.
+    - create organizational unit devops. This infrastructure code will be added later to examplebank gitops repository. Each organizational unit will have multiple accounts for each environment. So we cannot assign the infrastructure code to create organizational unit to any one account. It will be added to organization gitops repository.
+    - create aws accounts for different environments (component, integration, e2e, performance, production, dr) of the devops organizational unit. This infrastructure code will be added later to examplebank gitops repository. We cannot assign the infrastructure code to create accounts to any one organizational unit account. It will be added to organization gitops repository. 
+    - create vpc and ec2 instance in each account
+    - devops account ec2 instance should have all the terraform code to bootstrap the each account like
+      - create vpc and eks cluster. This infrastructure code will be added later to devops gitops repository account branch.
+      - configure github. This infrastructure code will be added later to devops-github repository.
+      - When eks cluster is created, argocd will be installed to it. It will start looking at devops gitops repository account branch.
+  - For security, only CI pipeline tool like jenkins should be able to write to the GitOps repositories. Better to have single EC2 instance with both Jenkins and GitOps repositories so that only Jenkins which is on the same instance as the GitOps repositories can write to the GitOps repositories. Use GitBucket for the GitOps repository. Also https://plugins.jenkins.io/git-server/, https://github.com/jenkinsci/git-server-plugin is a good option.
+  - Checkin code to install jenkins and configure it will devops-jenkins job in devops gitops repository account branch. 
+  - Create devops-jenkins repository which will trigger devops-jenkins CI/CD pipeline and configure examplebank, devops and devops-github jobs.
+  - Create examplebank, devops and devops-github repositories.
+- examplebank organization for storing source code. examplebank-gitops organization for storing gitops code. Avoid monorepo because it leads to unnecessary commits to the component gitops repository, we can have unlimited repositories, less secure because multiple applications share the same git repo.
+  - One repository per component
+  - One branch per environment like component, integration, e2e, performance, production, dr
+  - One directory per public cloud account like aws, azure, gcp, oracle containing cloud iac
+  - One directory per kubernetes cluster containing kubernetes iac.
+  - One deploy key per repository. Do not use personal access tokens with fine grained tokens since it is in beta. devops-github Terraform should add the public key to the github repository and add the private key as a secret which should be available to argocd via ~/.ssh/config https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#using-multiple-repositories-on-one-server
+- Use below annotation and github webhooks to ensure that application cache is invalidated only if files in the directory in which application resides are changed.
+  - argocd.argoproj.io/manifest-generate-paths: .
+- 3 Jenkins EC2 Master Controller instances with EFS mounted with write permissions. 3 EC2 Instances with EFS mounted with read permission containing git server. OR One gitops repository per organizational unit in Github. Only Jenkins Instances have write permission using short lived tokens. Argocd and terraform have only read permission using short lived tokens.
+  - Better to use Github for gitops repositories instead of git on a server for SLSA compliance. https://news-web.php.net/php.internals/113838
+- We could upload kubernetes manifests to helm oci repositories and use helm as source for ArgoCD. But then, anyone who can push to the helm oci repository will be able to make changes to the container image or helm charts. So it is same problem as git repositories. So better to just create git repository with one branch per environment for terraform iac and kubernetes iac.
+- For security reasons, disable kustomize, helm and jsonnet tools since developers may refer to dependant charts and hack the system. Better to just use Jenkins CI to convert helm charts to kubernetes yamls and store final yamls in GitOps repository.
+- Export Kubernetes ArgoCD events to permanent storage for auditing.
+- Add Admission controller in Kubernetes for SLSA verification of container images.
+- Create argocd-repo-server-tls secret and add --repo-server-strict-tls parameter to argocd-application-controller pods. In case of service mesh sidecar container, disable to TLS
+  - https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#inbound-tls-certificates-used-by-argocd-repo-server
+  - https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#configuring-tls-to-argocd-repo-server
+  - https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#disabling-tls-to-argocd-repo-server
+- App of Apps pattern. Not required, organizational unit infrastructure as code terraform modules deployed using Terraform GitOps created by Jenkins should find the organizational unit components from github repositories and then create terraform kubernetes yaml argocd application resources for them in the argocd namespace. Add resources-finalizer.argocd.argoproj.io finalizer to the argocd application.
+```
+├── Chart.yaml
+├── templates
+│   ├── guestbook.yaml
+│   ├── helm-dependency.yaml
+│   ├── helm-guestbook.yaml
+│   └── kustomize-guestbook.yaml
+└── values.yaml
+```
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argocd
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  source:
+    path: guestbook
+    repoURL: https://github.com/argoproj/argocd-example-apps
+    targetRevision: HEAD
+```
+```
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+```
+```
+argocd app create apps \
+    --dest-namespace argocd \
+    --dest-server https://kubernetes.default.svc \
+    --repo https://github.com/argoproj/argocd-example-apps.git \
+    --path apps  
+argocd app sync apps  
+```
+- Set up network policies to prevent direct access to Argo CD components (Redis and the repo-server). Make sure your cluster supports those network policies and can actually enforce them.
+- Secrets
+  - Use Cloud provider secrets manager like AWS secrets manager for providing secrets to cloud resources since it can be integrated with Cloud IAM.
+  - Use DAPR for secret management inside kubernetes
+  - For secret management for EC2 instances use iam role to get secrets from aws secrets manager.
+  - The application which needs the secret for connecting to it like DBMS should rotate the secret and update the aws secrets manager. Not the other way around. Cron scripts can be defined for it. 
+  - Both the old and new secret should be valid till the app start using the new secret.
+  - One secret can be shared by multiple components. Need to add tags on the secret and iam role should use tags to select which secrets should be available to components.
+  - IAM roles should be used by AWS components to connect to other AWS components like AWS RDS.
+  - IAM roles should be used to get client id and secret from secret manager and then use that to get short lived OIDC tokens from IDP like Okta to connect to IDP compliant applications.
+  - No passwords or long living tokens should be used for communication.
+  - DAPR mTLS and access policies for connecting to other kubernetes services and IAM role service account to connect to aws services outside kubernetes.
+- https://www.redhat.com/en/blog/gitops-quality-life-tips
+  - https://argo-cd.readthedocs.io/en/stable/user-guide/resource_tracking/#choosing-a-tracking-method
+- Dont use webhooks because then we need to install argocd api server and have network connection open from git provider to argocd api server. Better to just wait for configured refresh interval like 10 seconds. CI/CD pipeline can wait 10 seconds after making the change to GitOps repository
+- Even though pod was stuck in pending state due to no nodes available, health of the argocd application was progressing because deployment status had desired number of replicas. CI/CD pipeline should check for ArgoCD events like synced and health status as healthy within specified timeout period. If not, then it should override the folder with previous commit which changed files in the folder and create new commit.
+- Use an init container for argo-repo-server deployment to get repository credentials and update ~/.ssh/config through volume mounts.
 
 ### Google account
 - Create account in google with examplebank2024@gmail.com email address.
