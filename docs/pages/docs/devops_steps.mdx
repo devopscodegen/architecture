@@ -12,6 +12,146 @@ import { Steps } from 'nextra/components'
 
 <Steps>
 
+### Algorithm
+
+- Create google account examplebank.azure@gmail.com
+- Create azure cloud account with email examplebank.azure@gmail.com
+- Create VM with minikube, fluxcd, tofu controller and opentofu inside this account
+- Add a terraform resource which is watching a directory which creates below
+  - examplebank organization
+    - nonprod organizational unit and vm
+      - In this vm, add terraform resource which creates
+        - devops organizational unit and vm
+    - prod organizational unit and vm
+      - In this vm, add terraform resource which creates
+        - devops organizational unit and vm
+          - In this vm, add terraform resource which creates
+            - aks cluster with argocd
+            - argocd should then install required controllers, jenkins and gitea with examplebank, examplebank-nonprod and examplebank-prod organizations.
+            - devops-gitea GitOps repository needs to be created in gitea examplebank-prod organization
+            - devops-github GitOps repository needs to be created in github examplebank-prod organization
+- Terraform VMs should wait for this devops-github repository to be created and once it is created, checkin the github repository creation code and once the github source code repository for examplebank, nonprod, prod and devops are created, it should checkin the fluxcd and terraform code to them. 
+- Terraform VMs should also do the same for jenkins so that CI/CD pipelines are created and triggered which will copy the terraform code to devops-jenkins and devops-github GitOps repositories. We cannot use fluxcd pointing to individual gitops repository since gitops repository does not exist and jenkins CI/CD pipeline does not exist to copy the code to the GitOps repository.
+- We can do Jenkins+Gitea and Github Actions+Github.
+
+### GitOps repositories
+
+- For bootstrapping, no need to use dc01. We can use management account of one of the clouds like aws, azure or gcp.
+- We do not need to use Jenkins for bootstrapping CI/CD pipeline since the CI/CD pipeline will just checkout and checkin the infrastructure code to gitops repositories. We dont have other tools like linters, artifact repository, etc. available so we dont need to use Jenkins. We can just use Github actions or similar CI/CD tool of the code repository provider cloud. 
+- During bootstrapping, we can use flux cd terraform of management account of one of the clouds to create and maintain the github repositories and then transfer the responsibility of these github repositories to the devops prod account flux cd terraform of the same cloud.
+- After creating organization, first OU we should create is devops and also create all the components of devops like devops-jenkins, devops-github, devops-nexusrm, devops-sonarqube, etc. so that we can start managing the other components using Jenkins CI/CD pipelines instead of code repository provider cloud CI/CD pipeline tool like Github actions.
+- Create nonprod and prod OUs and then create devops, testing, orgunit01 and other OUs inside them.
+- We will use app of apps so that argocd manages its own apps. We dont need terraform to create the apps.
+- Terraform should just create the kubernetes cluster, create argocd namespace and install argocd and create an app which points to a git repository which will contain application resources for all code that is deployed to the kubernetes cluster.
+- Code repository directories in devops/infrastructure directory : ( No need for devops/container_deployment directory )
+  - aws/orgunit01/eks/argocd -> orgunit01 repository aws/orgunit01/env/eks branch application resources argocd directory.
+  - aws/orgunit01/eks/kubernetes -> orgunit01-app01-transfer repository aws/orgunit01/env/eks branch kubernetes directory.
+  - aws/orgunit01/fluxcd -> orgunit01 repository aws/orgunit01/env branch terraform resources fluxcd directory.
+  - aws/orgunit01/terraform -> orgunit01-app01-transfer repository aws/orgunit01/env branch terraform directory.
+  - aws/devops/fluxcd -> devops repository aws/devops/nonprodX and aws/devops/prod branch fluxcd directory.
+  - aws/devops/terraform -> orgunit01-app01-transfer repository aws/devops/nonprodX and aws/devops/prod  branch terraform directory.
+
+| Repository | Branch | Folders | Information |
+| --- | --- | --- | --- |
+| https://github.com/examplebank/examplebank.git | release/1.0 | devops, docs, src, test | Currently in production |
+| https://github.com/examplebank/examplebank.git | release/2.0 | devops, docs, src, test | Next |
+| https://github.com/examplebank/examplebank.git | release/3.0 | devops, docs, src, test | Future |
+| https://github.com/examplebank/orgunit01.git | release/1.0 | devops, docs, src, test | Currently in production |
+| https://github.com/examplebank/orgunit01.git | release/2.0 | devops, docs, src, test | Next |
+| https://github.com/examplebank/orgunit01.git | release/3.0 | devops, docs, src, test | Future |
+| https://github.com/examplebank/orgunit01-app01-transfer.git | release/1.0 | devops, docs, src, test | Currently in production |
+| https://github.com/examplebank/orgunit01-app01-transfer.git | release/2.0 | devops, docs, src, test | Next |
+| https://github.com/examplebank/orgunit01-app01-transfer.git | release/3.0 | devops, docs, src, test | Future |
+
+| GitOps repository | Branch | Folders | Example |
+| --- | --- | --- | --- |
+| https://github.com/examplebank-nonprod/examplebank.git | github | terraform | self terraform vm installed on dc01 with tofu controller terraforms for all repositories with branches github/devops/nonprod |
+| https://github.com/examplebank-nonprod/examplebank.git | github/devops/nonprod | terraform | self and OUs source and GitOps nonprod Github repositories |
+| https://github.com/examplebank-prod/examplebank.git | github | terraform | self terraform vm installed on dc01 with tofu controller terraforms for all repositories with branches github/devops/prod |
+| https://github.com/examplebank-prod/examplebank.git | github/devops/prod | terraform | self and OUs GitOps prod Github repositories |
+| https://github.com/examplebank-prod/examplebank.git | dc01 | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git dc01 and https://github.com/examplebank-prod/examplebank.git dc01 tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/examplebank.git | aws | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git aws and https://github.com/examplebank-prod/examplebank.git aws tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/examplebank.git | azure | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git azure and https://github.com/examplebank-prod/examplebank.git azure tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/examplebank.git | gcp | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git gcp and https://github.com/examplebank-prod/examplebank.git gcp tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/examplebank.git | dc01 | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/examplebank.git | aws | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/examplebank.git | azure | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/examplebank.git | gcp | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | github/devops/nonprod | terraform | Application components source and GitOps nonprod Github repositories |
+| https://github.com/examplebank-prod/orgunit01.git | github/devops/prod | terraform | Application components prod Github repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | dc01/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | dc01/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01.git | dc01/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | dc01/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | dc01/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | aws/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | aws/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01.git | aws/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | aws/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | aws/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | azure/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | azure/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01.git | azure/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | azure/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | azure/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-nonprod/orgunit01.git | gcp/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01.git | gcp/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01.git | gcp/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | gcp/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
+| https://github.com/examplebank-prod/orgunit01.git | gcp/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | dc01/orgunit01/prod | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | dc01/orgunit01/dr | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | dc01/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | aws/orgunit01/prod | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | aws/orgunit01/dr | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | aws/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | azure/orgunit01/prod | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | azure/orgunit01/dr | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | azure/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | gcp/orgunit01/prod | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | gcp/orgunit01/dr | terraform, argocd | kubernetes deployment |
+| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | gcp/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
+
 ### Kustomize helm charts
 
 - Problem with helm charts is you cannot override the yaml if it is not part of values. To solve this problem, CI pipeline should use kustomize with helm charts.
@@ -265,107 +405,6 @@ Additionally, we are using kube2iam and iam roles to grant access AWS resources
 
 In ArgoCD, you can configure sync-waves to install first the CRDs and put those resources in a higher sync-wave with the sync option SkipDryRunOnMissingResource=true, so that it doesn't fail before applying
 ```
-
-| Repository | Branch | Folders | Information |
-| --- | --- | --- | --- |
-| https://github.com/examplebank/examplebank.git | release/1.0 | devops, docs, src, test | Currently in production |
-| https://github.com/examplebank/examplebank.git | release/2.0 | devops, docs, src, test | Next |
-| https://github.com/examplebank/examplebank.git | release/3.0 | devops, docs, src, test | Future |
-| https://github.com/examplebank/orgunit01.git | release/1.0 | devops, docs, src, test | Currently in production |
-| https://github.com/examplebank/orgunit01.git | release/2.0 | devops, docs, src, test | Next |
-| https://github.com/examplebank/orgunit01.git | release/3.0 | devops, docs, src, test | Future |
-| https://github.com/examplebank/orgunit01-app01-transfer.git | release/1.0 | devops, docs, src, test | Currently in production |
-| https://github.com/examplebank/orgunit01-app01-transfer.git | release/2.0 | devops, docs, src, test | Next |
-| https://github.com/examplebank/orgunit01-app01-transfer.git | release/3.0 | devops, docs, src, test | Future |
-
-| GitOps repository | Branch | Folders | Example |
-| --- | --- | --- | --- |
-| https://github.com/examplebank-nonprod/examplebank.git | github | terraform | self terraform vm installed on dc01 with tofu controller terraforms for all repositories with branches github/devops/nonprod |
-| https://github.com/examplebank-nonprod/examplebank.git | github/devops/nonprod | terraform | self and OUs source and GitOps nonprod Github repositories |
-| https://github.com/examplebank-prod/examplebank.git | github | terraform | self terraform vm installed on dc01 with tofu controller terraforms for all repositories with branches github/devops/prod |
-| https://github.com/examplebank-prod/examplebank.git | github/devops/prod | terraform | self and OUs GitOps prod Github repositories |
-| https://github.com/examplebank-prod/examplebank.git | dc01 | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git dc01 and https://github.com/examplebank-prod/examplebank.git dc01 tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/examplebank.git | aws | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git aws and https://github.com/examplebank-prod/examplebank.git aws tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/examplebank.git | azure | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git azure and https://github.com/examplebank-prod/examplebank.git azure tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/examplebank.git | gcp | terraform | self terraform vm with https://github.com/examplebank-nonprod/examplebank.git gcp and https://github.com/examplebank-prod/examplebank.git gcp tofu controller terraforms; org ; prod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/examplebank.git | dc01 | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/examplebank.git | aws | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/examplebank.git | azure | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/examplebank.git | gcp | terraform | nonprod OUs, accts, terraform vms, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | github/devops/nonprod | terraform | Application components source and GitOps nonprod Github repositories |
-| https://github.com/examplebank-prod/orgunit01.git | github/devops/prod | terraform | Application components prod Github repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | dc01/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | dc01/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | dc01/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01.git | dc01/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | dc01/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | dc01/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | aws/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | aws/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | aws/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01.git | aws/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | aws/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | aws/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | azure/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | azure/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | azure/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01.git | azure/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | azure/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | azure/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | gcp/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-nonprod/orgunit01.git | gcp/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01.git | gcp/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01.git | gcp/orgunit01/prod | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | gcp/orgunit01/dr | terraform, argocd | kubernetes cluster, tofu controller terraforms, argocd applications |
-| https://github.com/examplebank-prod/orgunit01.git | gcp/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | dc01/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | dc01/orgunit01/prod | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | dc01/orgunit01/dr | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | dc01/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | aws/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | aws/orgunit01/prod | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | aws/orgunit01/dr | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | aws/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | azure/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | azure/orgunit01/prod | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | azure/orgunit01/dr | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | azure/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/comptest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/inttest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/e2etest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/orgunit01/perftest01,02,03 | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/devops/nonprod01,02,03 | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
-| https://github.com/examplebank-nonprod/orgunit01-app01-transfer.git | gcp/testing/nonprod01,02,03 | terraform, argocd | sonarqube project |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | gcp/orgunit01/prod | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | gcp/orgunit01/dr | terraform, argocd | kubernetes deployment |
-| https://github.com/examplebank-prod/orgunit01-app01-transfer.git | gcp/devops/prod | terraform, argocd | jenkins CI/CD pipeline, nexus repositories |
 
 
 ### Google accounts
