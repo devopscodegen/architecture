@@ -1,22 +1,195 @@
 import { Steps } from 'nextra/components'
 
+## Architecture
+- Operational excellence
+  - Cloud account creation with compliance baselines
+    - AWS Landing zone accelerator and control tower
+  - Network
+    - Equinix Colocation and Fabric
+  - DevOps
+    - Jenkins
+    - Gitea
+    - Github
+    - Sonarqube
+  - GitOps
+    - ArgoCD
+    - Weaveworks FluxCD TF (Tofu) controller or HCP Terraform operator
+  - Dapr for Service-to-service invocation, Asynchronous Publish and subscribe events, Synchronous Orchestration Workflows, State management, Resource bindings, actors, configuration, distributed lock
+  - Infrastructure as code
+    - Terraform.
+    - Ansible.
+    - REST API ( Use mastercard terraform rest api provider )
+    - Jenkins Configuration as Code (a.k.a. JCasC) Plugin.
+- Security
+  - Each component should use entraid, keycloak, okta for authentication and authorization
+    - Signup, Login pages should be provided by entraid, keycloak, okta
+    - It can have username/password, Login with social providers, SAML, LDAP, Active Directory integrations, etc.
+    - When component pod or process starts, it should use IAM role, Secrets store CSI driver (SSCD) and AWS Secrets and Configuration Provider (ASCP) to mount the token which will be used by the process to call all other components.
+    - This single token will be used to call all other components.
+    - All other components should check with entraid, keycloak, Okta if token is valid and then approve/deny the request
+    - AWS secrets manager will use eventbridge and lambda functions to rotate the tokens.
+    - ssh deploy keys will be mounted in the pod as volumes by SSCD and ASCP and .ssh/config to use the private key with Host = reponame, Hostname = github.com, IdentifyFile = mounted private key. https://gist.github.com/holmberd/dbeb8789742acfd791747772104160fe
+    - Token will be used by Terraform as environment variable GITEA_TOKEN or GITHUB_TOKEN 
+  - Use entraid, keycloak, Okta for authentication and authorization of DevOps tools
+    - Search in google for "jenkins entraid", "gitea entraid", etc.
+    - When installing the devops tool, use entraid for authentication and authorization
+    - When connecting from one devops tool to another like jenkins to gitea, use entraid.
+    - Jenkins should use only one token from entraid to access all other devops tools like github/gitea, sonarqube, etc. with entraid roles mapping to devops tools roles. One user/token for nonprod and one user/token for prod.
+  - Dapr for Service-to-service invocation, secrets
+  - Use service account and iam roles (IRSA) to get secrets like ssh private keys, tokens, etc. from AWS Secret manager meant for the pod or namespace
+    - https://aws.github.io/aws-eks-best-practices/security/docs/data/#secrets-management
+    - Mount AWS secret manager secrets as volumes directly into Pod.
+      - https://github.com/kubernetes-sigs/secrets-store-csi-driver with AWS Secrets & Configuration Provider (ASCP)
+    - Convert AWS secret manager secrets into kubernetes secrets which can be used by pods in the namespace.
+      - https://github.com/external-secrets/external-secrets
+  - argocd, fluxcd, jenkins and terraform to github enterprise organization or gitea organization
+    - Create users for jenkins ( to commit, push and create prs for gitops repositories ) and terraform ( to create gitops repositories and add ssh deploy public keys to them and add ssh deploy private keys to cloud secrets manager like AWS secrets manager ) in entraid. Add them to appropriate teams in github/gitea or role mapping in entraid.
+    - Use ssh deploy keys for argocd and fluxcd to read gitops repositories since the cost of each user is 21 USD per month for Github enterprise and we need one user per organizational unit. If we create user, we are not using it to perform any api operation other than clone and checkout. Terraform user can add the ssh deploy public keys to gitea/github and add ssh deploy private keys to cloud secrets manager like AWS secrets manager for use by argocd and fluxcd.
+      - ssh deploy keys will be mounted in the pod as volumes by SSCD and ASCP and .ssh/config to use the private key with Host = reponame, Hostname = github.com, IdentifyFile = mounted private key. https://gist.github.com/holmberd/dbeb8789742acfd791747772104160fe
+    - https will be used to make changes for gitops repositories and ssh will be used to read from gitops repositories.
+  - Key rotation
+    - cloud secret management service publishes an event which triggers a serverless function which rotates the secret and updates the secret management service. A secret can be
+    - ssh deploy key should be rotated by lambda functions of AWS secrets manager. It could use terraform taint command to mark the public key and private key as tainted in terraform state so that the next sync updates them. Terraform state is also stored in AWS secrets manager.
+      - https://developer.hashicorp.com/terraform/cli/commands/taint
+    - AWS secrets manager should rotate the entraid tokens using lambda functions
+    - https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html
+    - https://learn.microsoft.com/en-us/azure/key-vault/secrets/tutorial-rotation
+    - https://learn.microsoft.com/en-us/azure/key-vault/secrets/tutorial-rotation-dual?tabs=azure-cli
+    - https://cloud.google.com/secret-manager/docs/secret-rotation
+- Reliability
+  - EKS, AKS, GKE
+- Performance Efficiency
+- Cost Optimization
+- CNCF projects https://www.cncf.io/projects/ . Click on button VIEW ON CNCF LANDSCAPE
+  - argo
+  - containerd
+  - coredns
+  - etcd
+  - fluentd
+  - flux
+  - harbor
+  - helm
+  - jaeger
+  - keda
+  - kubernetes
+  - kustomize
+  - open policy agent
+  - prometheus
+  - artifacthub
+  - backstage
+  - cert manager
+  - chaos mesh
+  - cni
+  - dapr
+  - keycloak
+  - knative
+  - open feature
+  - open telemetry
+
 ## DevOps steps
 
 - Each organization, organizational unit, library, application, tool, middleware, microservice, data pipeline, dashboard, etc. is a component. We need code repository, CI/CD pipeline, artifact repositories and other DevOps infrastructure resources for each component.
 
-- Infrastructure as code components.
-  - Terraform.
-  - Ansible.
-  - REST API ( Use mastercard terraform rest api provider )
-  - Jenkins Configuration as Code (a.k.a. JCasC) Plugin.
-
 <Steps>
 
-### Algorithm
+### Backstage
 
+- Maintain and operate your deployment of Backstage. This includes customer support, infrastructure, CI/CD and, as your Backstage product grows, on-call support.
+- Drive adoption of customers (developers at your company).
+- Work with senior tech leadership and architects to ensure your organization's best practices for software development are encoded into a set of Software Templates.
+- Evangelize Backstage as a central platform towards other infrastructure/platform teams.
+- Security
+  - The UrlReader facility is of particular interest for a secure Backstage configuration. In particular the backend.reading.allow configuration lists the hosts that you trust the backend to be able to read content from on behalf of users. It is extremely important that this list does not, for example, allow access to instance metadata endpoints of cloud providers, or other endpoints that your Backstage instance may have access to which contain sensitive information. In general it is recommended to keep the list minimal and only allow reading from required endpoints. The same concerns apply to custom implementations of the UrlReader interface, if you need to implement these through code.
+  - For a high-security deployment, the auth backend should therefore be deployed in a separate service with its own database.
+  - Operators should configure catalog rules to limit the allowed entity kinds that users can define. 
+  - By default all internal users are allowed to create and delete entities. If this does not fit your organization's needs it is recommended to enable and configure the permission system to restrict these operations.
+  - By default, Scaffolding jobs execute directly on the host machine, including any actions defined in the template. Because the Scaffolder templates are considered a more sensitive area it is recommended to control access to create and update templates to trusted parties.
+  - One strategy that allows you to reduce the access that the Scaffolder service has is to rely on user credentials when executing actions. For example, a GitHub App integration could be configured with read-only permissions, with a separate user OAuth token used to create repositories. This requires that your users have access to create repositories in the first place.
+  - By default all internal users are allowed to execute templates in the scaffolder. If this does not fit your organization's needs it is recommended to enable and configure the permission system to restrict these operations.
+  - avoid injecting authentication headers for upstream services in proxy configuration. restrict the access as much as possible, for example using the allowedMethods option to limit the methods that can be used, and using tokens with the minimum required authorization scope.
+- 
+
+### Solution
+
+- examplebank
+  - AWS
+    - examplebank organization
+      - examplebank account
+      - nonprod organizational unit
+        - devops organizational unit
+          - nonprod01
+            - devops-comptest01 account
+            - devops-inttest01 account
+            - devops-e2etest01 account
+            - devops-perftest01 account
+            - devops-nonprod01 account
+          - nonprod02
+            - devops-comptest02 account
+            - devops-inttest02 account
+            - devops-e2etest02 account
+            - devops-perftest02 account
+            - devops-nonprod02 account
+          - nonprod03
+            - devops-comptest03 account
+            - devops-inttest03 account
+            - devops-e2etest03 account
+            - devops-perftest03 account
+            - devops-nonprod03 account
+        - orgunit01 organizational unit
+          - nonprod01
+            - orgunit01-comptest01 account
+            - orgunit01-inttest01 account
+            - orgunit01-e2etest01 account
+            - orgunit01-perftest01 account
+          - nonprod02
+            - orgunit01-comptest02 account
+            - orgunit01-inttest02 account
+            - orgunit01-e2etest02 account
+            - orgunit01-perftest02 account
+          - nonprod03
+            - orgunit01-comptest03 account
+            - orgunit01-inttest03 account
+            - orgunit01-e2etest03 account
+            - orgunit01-perftest03 account
+      - prod organizational unit
+        - devops organizational unit
+          - devops-prod account
+          - devops-dr account
+        - orgunit01 organizational unit
+          - orgunit01-prod account
+          - orgunit01-dr account
+- Azure
+- Google cloud
+- Create devops-nonprod01 account in devops OU in nonprod OU and devops-prod account in devops OU in prod OU with below
+  - Below container images copied to private registry like ECR.
+    - ArgoCD application controller
+    - ArgoCD repo server
+    - ArgoCD redis
+    - FluxCD source controller
+    - Tofu controller
+  - EKS/AKS/GKE cluster with below
+    - ArgoCD application controller
+    - ArgoCD repo server
+    - ArgoCD redis
+  - ArgoCD app of apps pointing to ECR OCI repository
+  - Service account with IAM Role for argocd and tofu controllers.
+- Push Kubernetes yaml and terraform code to ECR OCI Repository where app of apps is pointing to since github or gitea is not configured yet.
+- ArgoCD application controller will create the argocd applications for fluxcd source controller, tofu controller and others and repoint to gitops repository which does not exist yet.
+- tofu controller terraform resource pointing to terraform code will configure github or argocd application controller will install gitea. nonprod will configure nonprod and prod will configure prod.
+- They will then create the required gitops repositories using terraform or argocd.
+- They will checkin the code from OCI ECR to the gitops repositories appropriate branch.
+  - Create devops, devops-github, devops-gitea, devops-argocd-application-controller, devops-argocd-redis, devops-argocd-repo-server, devops-fluxcd-source-controller, devops-fluxcd-tf-controller repositories in examplebank, examplebank-nonprod and examplebank-prod organizations.
+- If possible, Jenkins can be added to copy files from source code repository to gitops repository instead of directly checkin files to gitops repository.
+  - Create devops-jenkins repositories in examplebank, examplebank-nonprod and examplebank-prod organizations.
+- Jenkins pipeline should also update the container images in ECR using CI/CD.
+- Install all required devops tools.
+- For orgunit01 and other OUs, we just need to point the argocd app of apps to appropriate git repository branch and argocd will do the rest.
+
+### Solution
+- Below has problem with security and reliability because of minikube and k3s. Companies are not interested in creating landing zones using terraform directly. They will use services like AWS Control Tower because each account that gets created has some predefined resources which should not be changed by iam roles of the account. There are a lot of compliance requirements from landing zones for different industries which are already satisfied by these landing zone solutions - https://aws.amazon.com/solutions/implementations/landing-zone-accelerator-on-aws/. So we should not use below solution for landing zone and instead start with devops organizational unit per environment account with Kubernetes (EKS/AKS) installed and argocd installed in it. Then we should use argocd to install other kubernetes resources and to install fluxcd source controller and tofu controller OR terraform operator to use terraform to create all the resources required by the organizational unit components using GitOps. We can use upload all terraform code to cloud native oci registry like AWS ECR before git server is created.
 - Create google account examplebank.azure@gmail.com
 - Create azure cloud account with email examplebank.azure@gmail.com
-- Create VM with minikube, fluxcd, tofu controller and opentofu inside this account
+- Create VM with minikube, fluxcd, tofu controller and opentofu inside this account. It should have all required fluxcd and terraform code inside the image.
 - Add a terraform resource which is watching a directory which creates below
   - examplebank organization
     - nonprod organizational unit and vm
@@ -30,9 +203,26 @@ import { Steps } from 'nextra/components'
             - argocd should then install required controllers, jenkins and gitea with examplebank, examplebank-nonprod and examplebank-prod organizations.
             - devops-gitea GitOps repository needs to be created in gitea examplebank-prod organization
             - devops-github GitOps repository needs to be created in github examplebank-prod organization
-- Terraform VMs should wait for this devops-github repository to be created and once it is created, checkin the github repository creation code and once the github source code repository for examplebank, nonprod, prod and devops are created, it should checkin the fluxcd and terraform code to them. 
+- Once the resources are created, it should delete the code and point to the appropriate gitops repository.
+- Terraform VMs should NOT wait for this devops-github repository to be created and once it is created, checkin the github repository creation code and once the github source code repository for examplebank, nonprod, prod and devops are created, it should checkin the fluxcd and terraform code to them. This is because it is anti pattern and we will have to give write permission to Terraform VM to write to the GitOps repository. 
+- We need to keep the fluxcd and terraform code on the VMs as part of the VM image and then create the source code repository with terraform and fluxcd code checked into devops/infrastructure folder so that it is copied by the Jenkins CI/CD pipeline to the required GitOps repository, branch and directory. 
 - Terraform VMs should also do the same for jenkins so that CI/CD pipelines are created and triggered which will copy the terraform code to devops-jenkins and devops-github GitOps repositories. We cannot use fluxcd pointing to individual gitops repository since gitops repository does not exist and jenkins CI/CD pipeline does not exist to copy the code to the GitOps repository.
 - We can do Jenkins+Gitea and Github Actions+Github.
+- VMs need read only access to the appropriate GitOps repositories setup.
+- We should be able to recreate the VM during patching activity. The fluxcd configuration pointing to appropriate GitOps repository should not be lost. Changes to the nonprod and prod vms should be done by management account. Changes to the ou vms need to be done by nonprod and prod vms. This is because we cannot restart VMs during patching when terraform is running inside the VM. We need to manually update the management account VM. We need to try to implement self management of VM by terraform via GitOps if possible. Maybe create a new VM, update the state and then delete the old VM. terraform state needs to be stored in secrets manager with required iam access to the secret manager. Does tofu controller have feature to check if anything else apart from what was created by it was created manually and delete the manually created resources ?
+- Horizontal and vertical scaling changes for fluxcd is required for performance reasons.
+- Need to provide workload identify to terraform runners to be able to plan and apply infrastructure code.
+- Due to all these requirements which have been already thought of by fluxcd and tofu controller, it is best to use them instead of trying to move to argocd + tofu controller or removing kubernetes and using single binary controller.
+- Well Architected review
+  - Operational excellence
+  - Security
+    - Better to use EKS anywhere, AKS edge essentials instead of k3s for security reasons.
+  - Reliability
+    - What happens if AZ where the tofu controller vm is running goes down ? 
+  - Performance efficiency
+  - Cost optimization
+    - Better to use k3s instead of EKS anywhere, AKS edge essentials to lower cost.
+
 
 ### GitOps repositories
 
@@ -210,7 +400,7 @@ https://docs.dapr.io
 - Once they are used to create AWS, Azure and Google cloud infrastructure, they will be made highly available with Passive or Active strategies in these clouds. 
 - For example, Jenkins in AWS needs to handle CI/CD pipelines which build and deploy components to AWS infrastructure. Jenkins in Azure needs to handle CI/CD pipelines which build and deploy components to Azure infrastructure.
 
-### GitOps for CD
+### GitOps for CD - ArgoCD
 - Harness, Spinnaker for CI/CD and Morpheus Data, Cloudify for cloud management are hype. They dont have proper open source support
 - Use Cloudbees Jenkins for CI, ArgoCD for Kubernetes CD and Hashicorp cloud platform Terraform, Vault, etc. for Infrastructure CD.
 - All Kubernetes (Helm charts) and Infrastructure code along with environment configuration code will be checked into the code repository.
@@ -405,6 +595,11 @@ Additionally, we are using kube2iam and iam roles to grant access AWS resources
 
 In ArgoCD, you can configure sync-waves to install first the CRDs and put those resources in a higher sync-wave with the sync option SkipDryRunOnMissingResource=true, so that it doesn't fail before applying
 ```
+
+### GitOps for CD - FluxCD
+- CRD
+  - GitRepository, OCIRepository, HelmRepository and Bucket
+  - HelmRelease, Bucket, Kustomization
 
 
 ### Google accounts

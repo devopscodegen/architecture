@@ -7,5 +7,6 @@
   "continuous_testing": "Continuous testing (CT)",
   "examplebank_design": "Example bank design",
   "devops_domain_driven_design": "DevOps domain driven design (DDD)",
-  "devops_steps": "DevOps steps"
+  "devops_steps": "DevOps steps",
+  "design": "Design"
 }

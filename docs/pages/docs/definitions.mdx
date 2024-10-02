@@ -85,6 +85,24 @@ Multiple types
 | Automation Scripts | InfraOps, CloudOps, NetOps - Python, Shell scripting | 
 <br/><br/>
 
+## Types of software application components according to Atlassian compass
+| Type | Description |
+| --- | --- |
+| Service | An independently-deployable software unit that is usually is operated by a person or a team. Services can be as large as monoliths or smaller microservices. Service components have a Tier field to indicate how critical the service is to your business. |
+| Library | A reusable collection of objects, functions, and methods. A library is typically used by other components. |
+| Application | A fully-packaged application, like a mobile application, desktop application, or a CLI-type tool. |
+| Capability | A higher-level product functionality that end-users understand and in which they see value. A capability is an abstraction of one or more underlying software components that power it. |
+| Cloud resource | An entity or service provided by a cloud vendor, with consumer-managed configuration and monitoring. |
+| Data pipeline | A sequence of tools and processes used to automate the transformation and movement of data from a source to a target system. |
+| Machine learning model | An algorithm that identifies patterns in a data set and makes predictions over it. |
+| UI element | Reusable building blocks of a design system that meet a specific interaction or user interface need and work together to create patterns and user experiences. |
+| Website | A single web page or a collection of related web pages under a single domain. Websites mainly consist of audio-visual or text content for reading, listening, or viewing. People can't edit, contribute to, or affect the website content. Websites are typically publicly accessible and don't require authentication. |
+| Dataset | A collection of data about a specific topic that can be referenced by code, generally a table. |
+| Dashboard | Data visuals that provide views of key performance indicators relevant to a particular objective or business process. |
+| Data product | A governed, self-contained, cohesive, read-optimized data unit. |
+| Other | A component that doesn’t match the service, library, or application type. |
+<br/><br/>
+
 ## Software application components dependencies
 Software application components import functions and classes from Libraries / Frameworks and call them using defined parameters and return values.
 
@@ -116,6 +134,21 @@ Types of software application component dependencies which need to be developed 
 ## Platform
 - A platform is a set of tools that are used to serve a common purpose
 - For example : DevOps Platform is a set of tools to implement DevOps practices to improve speed and quality of software delivery from ideation to feedback
+
+## Adopting a platform
+
+- Platform team has the following responsibilities :
+  - Maintain and operate platform tools. This includes customer support, infrastructure, CI/CD and, as your platform grows, on-call support.
+  - Drive adoption of customers (developers at your company).
+  - Work with senior tech leadership and architects to ensure your organization's best practices for software development are encoded into a set of Software Templates.
+  - Evangelize platform towards other infrastructure/platform teams.
+    - Arrange "Lunch & Learns" and seminars. Frequently offer teams interested in your platform use or development to come to a seminar where you show, for example, how to build a plugin from scratch.
+    - Embedding. As contributing teams start development of their first plugin it is often very appreciated to have one person from your platform team come over and "embed" for a Sprint or two.
+    - Hack days. Your platform-focused Hackathons or hack days is a fun way to get people into plugin development.
+    - Show & tell meetings. In order to build an internal community around your platform, have quarterly meetings where anyone working or using your platform is invited to present their work. This is not only a great way to get early feedback, but also helps coordination between teams that are building overlapping experiences.
+    - Observability
+    - Pro-actively identify new plugins. Reach out to teams that own internal UIs or platforms that you think would make sense to consolidate into your platform.
+    
 
 ## IT organisational unit
 - IT employees responsible for all software applications and platforms.
