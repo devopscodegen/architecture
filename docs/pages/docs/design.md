@@ -458,8 +458,8 @@ sequenceDiagram
   participant devops_platform_team as DevOps<br>platform team
   participant cloud_management_platform_team as Cloud management<br>platform team
   participant it_teams as IT teams
-  participant non_it_teams as Non IT teams like<br>Legal team,<br>Compliance team
-  note over it_teams : IT teams like<br>Other platform teams,<br>Development teams,<br>Operations teams
+  participant non_it_teams as Non IT teams like<br>legal team,<br>compliance team
+  note over it_teams : IT teams like<br>other platform teams,<br>development teams,<br>operations teams
   par
     devops_platform_team->>cloud_management_platform_team : Get DevOps requirements
   and
@@ -473,7 +473,7 @@ sequenceDiagram
   and
     destroy it_teams
     cloud_management_platform_team->>it_teams : Get Cloud requirements
-    note over it_teams : IT teams like<br>Other platform teams,<br>Development teams,<br>Operations teams
+    note over it_teams : IT teams like<br>other platform teams,<br>development teams,<br>operations teams
   and
     destroy non_it_teams
     cloud_management_platform_team->>non_it_teams : Get Cloud requirements
