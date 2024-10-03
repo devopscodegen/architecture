@@ -526,3 +526,5 @@ sequenceDiagram
   backstage_devops_nonprod_aws_account->>gitea_devops_nonprod_aws_account : In order to create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories,<br>checkin infrastructure code to aws/devops-nonprod branch of<br> devops, devops-gitea, devops-jenkins & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea
   gitops_devops_nonprod_aws_account->>gitea_devops_nonprod_aws_account : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-gitea, devops-jenkins, & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories
 ```
+
+# Bootstrap code for orgunit01 and other OUs will be checkin to code repository by DevOps platform team and CI pipeline will checkin it to the GitOps repository of that OU and no one needs to manually provide it to the Cloud management platform team. They can take it from the bootstrap folder of the account branch of the GitOps repository.
