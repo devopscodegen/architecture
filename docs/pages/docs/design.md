@@ -253,8 +253,6 @@ stateDiagram-v2
             orgunit01_nonprod01_aws_ou : orgunit01-nonprod01 AWS OU
             state orgunit01_nonprod01_aws_ou {
                 direction LR
-                orgunit01_nonprod01_aws_account : orgunit01-nonprod01
-                orgunit01_nonprod01_aws_account : AWS account (GitOps)
                 orgunit01_comptest01_aws_account : orgunit01-comptest01
                 orgunit01_comptest01_aws_account : AWS account
                 orgunit01_inttest01_aws_account : orgunit01-inttest01
@@ -262,13 +260,11 @@ stateDiagram-v2
                 orgunit01_e2etest01_aws_account : orgunit01-e2etest01
                 orgunit01_e2etest01_aws_account : AWS account
                 orgunit01_perftest01_aws_account : orgunit01-perftest01
-                orgunit01_perftest01_aws_account : AWS account
+                orgunit01_perftest01_aws_account : AWS account (GitOps)
             }
             orgunit02_nonprod01_aws_ou : orgunit02-nonprod01 AWS OU
             state orgunit02_nonprod01_aws_ou {
                 direction LR
-                orgunit02_nonprod01_aws_account : orgunit02-nonprod01
-                orgunit02_nonprod01_aws_account : AWS account (GitOps)
                 orgunit02_comptest01_aws_account : orgunit02-comptest01
                 orgunit02_comptest01_aws_account : AWS account
                 orgunit02_inttest01_aws_account : orgunit02-inttest01
@@ -276,7 +272,7 @@ stateDiagram-v2
                 orgunit02_e2etest01_aws_account : orgunit02-e2etest01
                 orgunit02_e2etest01_aws_account : AWS account
                 orgunit02_perftest01_aws_account : orgunit02-perftest01
-                orgunit02_perftest01_aws_account : AWS account
+                orgunit02_perftest01_aws_account : AWS account (GitOps)
             }
         }
         nonprod02_aws_ou : nonprod02 AWS OU
@@ -285,8 +281,6 @@ stateDiagram-v2
             orgunit01_nonprod02_aws_ou : orgunit01-nonprod02 AWS OU
             state orgunit01_nonprod02_aws_ou {
                 direction LR
-                orgunit01_nonprod02_aws_account : orgunit01-nonprod02
-                orgunit01_nonprod02_aws_account : AWS account (GitOps)
                 orgunit01_comptest02_aws_account : orgunit01-comptest02
                 orgunit01_comptest02_aws_account : AWS account
                 orgunit01_inttest02_aws_account : orgunit01-inttest02
@@ -294,13 +288,11 @@ stateDiagram-v2
                 orgunit01_e2etest02_aws_account : orgunit01-e2etest02
                 orgunit01_e2etest02_aws_account : AWS account
                 orgunit01_perftest02_aws_account : orgunit01-perftest02
-                orgunit01_perftest02_aws_account : AWS account
+                orgunit01_perftest02_aws_account : AWS account (GitOps)
             }
             orgunit02_nonprod02_aws_ou : orgunit02-nonprod02 AWS OU
             state orgunit02_nonprod02_aws_ou {
                 direction LR
-                orgunit02_nonprod02_aws_account : orgunit02-nonprod02
-                orgunit02_nonprod02_aws_account : AWS account (GitOps)
                 orgunit02_comptest02_aws_account : orgunit02-comptest02
                 orgunit02_comptest02_aws_account : AWS account
                 orgunit02_inttest02_aws_account : orgunit02-inttest02
@@ -308,7 +300,7 @@ stateDiagram-v2
                 orgunit02_e2etest02_aws_account : orgunit02-e2etest02
                 orgunit02_e2etest02_aws_account : AWS account
                 orgunit02_perftest02_aws_account : orgunit02-perftest02
-                orgunit02_perftest02_aws_account : AWS account
+                orgunit02_perftest02_aws_account : AWS account (GitOps)
             }
         }
         nonprod03_aws_ou : nonprod03 AWS OU
@@ -317,8 +309,6 @@ stateDiagram-v2
             orgunit01_nonprod03_aws_ou : orgunit01-nonprod03 AWS OU
             state orgunit01_nonprod03_aws_ou {
                 direction LR
-                orgunit01_nonprod03_aws_account : orgunit01-nonprod03
-                orgunit01_nonprod03_aws_account : AWS account (GitOps)
                 orgunit01_comptest03_aws_account : orgunit01-comptest03
                 orgunit01_comptest03_aws_account : AWS account
                 orgunit01_inttest03_aws_account : orgunit01-inttest03
@@ -326,13 +316,11 @@ stateDiagram-v2
                 orgunit01_e2etest03_aws_account : orgunit01-e2etest03
                 orgunit01_e2etest03_aws_account : AWS account
                 orgunit01_perftest03_aws_account : orgunit01-perftest03
-                orgunit01_perftest03_aws_account : AWS account
+                orgunit01_perftest03_aws_account : AWS account (GitOps)
             }
             orgunit02_nonprod03_aws_ou : orgunit02-nonprod03 AWS OU
             state orgunit02_nonprod03_aws_ou {
                 direction LR
-                orgunit02_nonprod03_aws_account : orgunit02-nonprod03
-                orgunit02_nonprod03_aws_account : AWS account (GitOps)
                 orgunit02_comptest03_aws_account : orgunit02-comptest03
                 orgunit02_comptest03_aws_account : AWS account
                 orgunit02_inttest03_aws_account : orgunit02-inttest03
@@ -340,7 +328,7 @@ stateDiagram-v2
                 orgunit02_e2etest03_aws_account : orgunit02-e2etest03
                 orgunit02_e2etest03_aws_account : AWS account
                 orgunit02_perftest03_aws_account : orgunit02-perftest03
-                orgunit02_perftest03_aws_account : AWS account
+                orgunit02_perftest03_aws_account : AWS account (GitOps)
             }
         }
 ```
