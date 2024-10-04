@@ -1,4 +1,4 @@
-# Organization
+# Clouds
 
 ```mermaid
 
@@ -30,10 +30,11 @@ stateDiagram-v2
     ntt_data_center_private_cloud : Private cloud
     example_bank_organization --> ntt_data_center_private_cloud
 ```
+<br>
 
 # AWS Public Cloud
 
-## AWS Organization
+## AWS organization and organizational units
 
 ```mermaid
 stateDiagram-v2
@@ -68,10 +69,9 @@ stateDiagram-v2
     prod_aws_ou : AWS OU
     examplebank_aws_organization --> prod_aws_ou
 ```
+<br>
 
-## AWS Organizational Units
-
-### nonprod
+## AWS nonprod organizational unit 
 
 ```mermaid
 stateDiagram-v2
@@ -231,8 +231,9 @@ stateDiagram-v2
             }
         }
 ```
+<br>
 
-### nonprod01, nonprod02, nonprod03
+## AWS nonprod01, nonprod02, nonprod03 organizational units
 
 ```mermaid
 stateDiagram-v2
@@ -332,8 +333,9 @@ stateDiagram-v2
             }
         }
 ```
+<br>
 
-### prod
+## AWS prod organizational unit
 
 ```mermaid
 stateDiagram-v2
@@ -449,8 +451,9 @@ stateDiagram-v2
             }
         }
 ```
+<br>
 
-# Create AWS landing zone
+## Create AWS landing zone
 
 ```mermaid
 sequenceDiagram
@@ -480,8 +483,9 @@ sequenceDiagram
   end
   cloud_management_platform_team->>cloud_management_platform_team : Create AWS Cloud landing zone, examplebank AWS account,<br>  examplebank AWS organization and nonprod, devops-nonprod, <br>prod & devops-prod AWS organizational units
 ```
+<br>
 
-# Install nonprod code repository server using GitOps
+## Install nonprod code repository server using GitOps
 
 ```mermaid
 sequenceDiagram
@@ -496,12 +500,13 @@ sequenceDiagram
   destroy aws_public_cloud 
   cloud_management_platform_team->>aws_public_cloud : Create devops-nonprod AWS account in<br>devops-nonprod OU of nonprod OU of <br>examplebank organization of<br> AWS public cloud
   destroy devops_nonprod_aws_account
-  cloud_management_platform_team->>devops_nonprod_aws_account : Use provided bootstrap infrastructure code &<br> container images to install argocd &<br> fluxcd wth tf controller or<br> argocd with HCP terraform operator<br>GitOps infrastructure in<br> devops-nonprod AWS account 
-  cloud_management_platform_team->>gitops_devops_nonprod_aws_account : Upload provided bootstrap <br>infrastructure code & container images to<br> devops-nonprod AWS account argocd GitOps Infrastructure
+  cloud_management_platform_team->>devops_nonprod_aws_account : Use provided bootstrap infrastructure code &<br> container images to install GitOps infrastructure <br>(argocd & fluxcd wth tf controller or<br> argocd with HCP terraform operator)<br> in devops-nonprod AWS account 
+  cloud_management_platform_team->>gitops_devops_nonprod_aws_account : In order to install Gitea,<br>upload provided bootstrap infrastructure code & container images to<br> devops-nonprod AWS account argocd GitOps Infrastructure
   gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Install Gitea & create <br>examplebank-nonprod gitea organization &<br> devops-gitea GitOps repository in it
 ```
+<br>
 
-# Install nonprod CI/CD pipeline server, artifact repository server and internal developer platform using GitOps
+## Install nonprod CI/CD pipeline server, artifact repository server and internal developer platform using GitOps
 
 ```mermaid
 sequenceDiagram
@@ -514,19 +519,51 @@ sequenceDiagram
   devops_platform_team->>nonprod_code_repository_server_gitea : In order to install Jenkins, Backstage &<br> Nexus repository manager in devops-nonprod AWS account,<br> checkin infrastructure code to aws/devops-nonprod branch of <br>newly created devops, devops-jenkins,<br> devops-backstage & devops-nexusrm Gitea GitOps repositories<br> of examplebank-nonprod organization of Gitea
   gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-jenkins, devops-backstage & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>Install Jenkins, Backstage &<br> Nexus repository manager in devops-nonprod AWS account
 ```
+<br>
 
-# Create devops OU, code repository, CI/CD pipeline, internal developer platform & artifact repository components in nonprod internal developer platform
+## Create devops OU, code repository, CI/CD pipeline, internal developer platform & artifact repository components in internal developer platform
 
 ```mermaid
 sequenceDiagram
   autonumber
   participant devops_platform_team as DevOps<br>platform team
-  participant nonprod_internal_developer_platform_backstage as nonprod internal<br>developer platform<br>(Backstage)
+  participant internal_developer_platform_backstage as Internal developer <br>platform<br>(Backstage)
   participant nonprod_code_repository_server_gitea as nonprod code <br>repository server<br>(Gitea)
   participant gitops_devops_nonprod_aws_account as GitOps<br>devops-nonprod <br>AWS account
-  devops_platform_team->>nonprod_internal_developer_platform_backstage : Create devops, devops-gitea, devops-jenkins, <br>devops-backstage & devops-nexusrm components
-  nonprod_internal_developer_platform_backstage->>nonprod_code_repository_server_gitea : In order to create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories,<br>checkin infrastructure code to aws/devops-nonprod branch of<br> devops, devops-gitea, devops-jenkins & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea
+  devops_platform_team->>internal_developer_platform_backstage : Create devops, devops-gitea, devops-jenkins, <br>devops-backstage & devops-nexusrm components
+  internal_developer_platform_backstage->>nonprod_code_repository_server_gitea : In order to create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories,<br>checkin infrastructure code to aws/devops-nonprod branch of<br> devops, devops-gitea, devops-jenkins & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea
   gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-gitea, devops-jenkins, & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories
 ```
+<br>
 
-# Bootstrap code for orgunit01 and other OUs will be checkin to code repository by DevOps platform team and CI pipeline will checkin it to the GitOps repository of that OU and no one needs to manually provide it to the Cloud management platform team. They can take it from the bootstrap folder of the account branch of the GitOps repository.
+## Create orgunit01 component in internal developer platform
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant devops_platform_team as DevOps<br>platform team
+  participant internal_developer_platform_backstage as Internal developer <br>platform<br>(Backstage)
+  participant nonprod_code_repository_server_gitea as nonprod code <br>repository server<br>(Gitea)
+  participant gitops_devops_nonprod_aws_account as GitOps<br>devops-nonprod <br>AWS account
+  devops_platform_team->>internal_developer_platform_backstage : Create orgunit01 component
+  internal_developer_platform_backstage->>nonprod_code_repository_server_gitea : In order to create orgunit01 code repository, artifact repositories, CI/CD pipeline & gitops repositories,<br>checkin infrastructure code to aws/devops-nonprod branch of<br> devops, devops-gitea, devops-jenkins & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea
+  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-gitea, devops-jenkins, & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>create orgunit01 code repository, artifact repositories, CI/CD pipeline and gitops repositories
+```
+<br>
+
+## Install GitOps infrastructure in orgunit01-perftest01 AWS account
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant nonprod_code_repository_server_gitea as nonprod code <br>repository server<br>(Gitea)
+  participant cloud_management_platform_team as Cloud management<br>platform team
+  participant aws_public_cloud as AWS public cloud
+  participant orgunit01_perftest01_aws_account as orgunit01-perftest01<br>AWS account
+  cloud_management_platform_team->>nonprod_code_repository_server_gitea : Checkout infrastructure code for <br>bootstrapping orgunit01-perftest01 AWS account<br>from aws/orgunit01-perftest01 branch of <br>examplebank-nonprod/orgunit01 GitOps repository
+  destroy aws_public_cloud 
+  cloud_management_platform_team->>aws_public_cloud : Create orgunit01-perftest01 AWS account in<br>orgunit01-nonprod01 OU of nonprod01 OU of <br>examplebank organization of<br> AWS public cloud
+  destroy orgunit01_perftest01_aws_account
+  cloud_management_platform_team->>orgunit01_perftest01_aws_account : Use checked out bootstrap infrastructure code to install <br>GitOps infrastructure (argocd & fluxcd wth tf controller or<br> argocd with HCP terraform operator)<br> in orgunit01-perftest01 AWS account and<br>point it to examplebank-nonprod/orgunit01 GitOps repository
+```
+<br>
