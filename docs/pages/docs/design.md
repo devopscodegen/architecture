@@ -491,14 +491,14 @@ sequenceDiagram
   participant aws_public_cloud as AWS public cloud
   participant devops_nonprod_aws_account as devops-nonprod<br>AWS account
   participant gitops_devops_nonprod_aws_account as GitOps<br>devops-nonprod <br>AWS account
-  participant nonprod_code_repository_server as nonprod code <br>repository server
+  participant nonprod_code_repository_server_gitea as nonprod code <br>repository server<br>(Gitea)
   devops_platform_team->>cloud_management_platform_team : Provide infrastructure code &<br> container images for <br>bootstrapping devops-nonprod AWS account
   destroy aws_public_cloud 
   cloud_management_platform_team->>aws_public_cloud : Create devops-nonprod AWS account in<br>devops-nonprod OU of nonprod OU of <br>examplebank organization of<br> AWS public cloud
   destroy devops_nonprod_aws_account
   cloud_management_platform_team->>devops_nonprod_aws_account : Use provided bootstrap infrastructure code &<br> container images to install argocd &<br> fluxcd wth tf controller or<br> argocd with HCP terraform operator<br>GitOps infrastructure in<br> devops-nonprod AWS account 
   cloud_management_platform_team->>gitops_devops_nonprod_aws_account : Upload provided bootstrap <br>infrastructure code & container images to<br> devops-nonprod AWS account argocd GitOps Infrastructure
-  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server : Install Gitea & create <br>examplebank-nonprod gitea organization &<br> devops-gitea GitOps repository in it
+  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Install Gitea & create <br>examplebank-nonprod gitea organization &<br> devops-gitea GitOps repository in it
 ```
 
 # Install nonprod CI/CD pipeline server, artifact repository server and internal developer platform using GitOps
@@ -507,12 +507,12 @@ sequenceDiagram
 sequenceDiagram
   autonumber
   participant devops_platform_team as DevOps<br>platform team
-  participant nonprod_code_repository_server as nonprod code <br>repository server
+  participant nonprod_code_repository_server_gitea as nonprod code <br>repository server<br>(Gitea)
   participant gitops_devops_nonprod_aws_account as GitOps<br>devops-nonprod <br>AWS account
-  devops_platform_team->>nonprod_code_repository_server : In order to create devops, devops-jenkins, <br>devops-backstage & devops-nexusrm GitOps repositories <br>in examplebank-nonprod organization of Gitea,<br> checkin infrastructure code to aws/devops-nonprod branch of <br>devops-gitea GitOps repository of examplebank-nonprod organization of Gitea
-  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops-gitea GitOps repository of example-nonprod organization of Gitea &<br> create devops, devops-jenkins,<br> devops-backstage & devops-nexusrm GitOps repositories <br>in examplebank-nonprod organization of Gitea
-  devops_platform_team->>nonprod_code_repository_server : In order to install Jenkins, Backstage &<br> Nexus repository manager in devops-nonprod AWS account,<br> checkin infrastructure code to aws/devops-nonprod branch of <br>newly created devops, devops-jenkins,<br> devops-backstage & devops-nexusrm Gitea GitOps repositories<br> of examplebank-nonprod organization of Gitea
-  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-jenkins, devops-backstage & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>Install Jenkins, Backstage &<br> Nexus repository manager in devops-nonprod AWS account
+  devops_platform_team->>nonprod_code_repository_server_gitea : In order to create devops, devops-jenkins, <br>devops-backstage & devops-nexusrm GitOps repositories <br>in examplebank-nonprod organization of Gitea,<br> checkin infrastructure code to aws/devops-nonprod branch of <br>devops-gitea GitOps repository of examplebank-nonprod organization of Gitea
+  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops-gitea GitOps repository of example-nonprod organization of Gitea &<br> create devops, devops-jenkins,<br> devops-backstage & devops-nexusrm GitOps repositories <br>in examplebank-nonprod organization of Gitea
+  devops_platform_team->>nonprod_code_repository_server_gitea : In order to install Jenkins, Backstage &<br> Nexus repository manager in devops-nonprod AWS account,<br> checkin infrastructure code to aws/devops-nonprod branch of <br>newly created devops, devops-jenkins,<br> devops-backstage & devops-nexusrm Gitea GitOps repositories<br> of examplebank-nonprod organization of Gitea
+  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-jenkins, devops-backstage & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>Install Jenkins, Backstage &<br> Nexus repository manager in devops-nonprod AWS account
 ```
 
 # Create devops OU, code repository, CI/CD pipeline, internal developer platform & artifact repository components in nonprod internal developer platform
@@ -521,12 +521,12 @@ sequenceDiagram
 sequenceDiagram
   autonumber
   participant devops_platform_team as DevOps<br>platform team
-  participant nonprod_internal_developer_platform as nonprod internal<br>developer platform
-  participant nonprod_code_repository_server as nonprod code <br>repository server
+  participant nonprod_internal_developer_platform_backstage as nonprod internal<br>developer platform<br>(Backstage)
+  participant nonprod_code_repository_server_gitea as nonprod code <br>repository server<br>(Gitea)
   participant gitops_devops_nonprod_aws_account as GitOps<br>devops-nonprod <br>AWS account
-  devops_platform_team->>nonprod_internal_developer_platform : Create devops, devops-gitea, devops-jenkins, <br>devops-backstage & devops-nexusrm components
-  nonprod_internal_developer_platform->>nonprod_code_repository_server : In order to create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories,<br>checkin infrastructure code to aws/devops-nonprod branch of<br> devops, devops-gitea, devops-jenkins & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea
-  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-gitea, devops-jenkins, & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories
+  devops_platform_team->>nonprod_internal_developer_platform_backstage : Create devops, devops-gitea, devops-jenkins, <br>devops-backstage & devops-nexusrm components
+  nonprod_internal_developer_platform_backstage->>nonprod_code_repository_server_gitea : In order to create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories,<br>checkin infrastructure code to aws/devops-nonprod branch of<br> devops, devops-gitea, devops-jenkins & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea
+  gitops_devops_nonprod_aws_account->>nonprod_code_repository_server_gitea : Checkout infrastructure code from aws/devops-nonprod branch of <br>devops, devops-gitea, devops-jenkins, & devops-nexusrm GitOps repositories<br> of example-nonprod organization of Gitea &<br>create devops, devops-gitea, devops-jenkins & devops-backstage<br> code repositories, CI/CD pipelines & artifact repositories
 ```
 
 # Bootstrap code for orgunit01 and other OUs will be checkin to code repository by DevOps platform team and CI pipeline will checkin it to the GitOps repository of that OU and no one needs to manually provide it to the Cloud management platform team. They can take it from the bootstrap folder of the account branch of the GitOps repository.
